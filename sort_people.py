@@ -53,17 +53,33 @@ def get_volunteer_skills_and_availability():
     return(date_list, volunteer_list, skills, availability)
 
 
+def keep_one_skill(to_keep: str):
+    # only keep one kind of skills
+    vol = []
+    for key, value in skills.items():
+        if to_keep in value:
+            vol.append(key)
+    return vol
 
 date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
 n_volunteer = len(volunteer_list)
 print("number of volunteer",n_volunteer)
 
+ci = keep_one_skill("is_ci")
+vpsp = keep_one_skill("is_chauf_vpsp")
+pse2 = keep_one_skill("is_pse2")
+
+
 
 # The aim of this plot is to start visualising the data in order to think about how
 # to make groups
+to_plot = pse2
+plot_name = "pse2_dispos"
+n_to_plot = len(to_plot)
+
 
 plt.figure(figsize=(25,20))
-for count, volunteer in enumerate(volunteer_list):
+for count, volunteer in enumerate(to_plot):
     linestyle = "-"
     color = "gray"
     
@@ -86,7 +102,7 @@ for count, volunteer in enumerate(volunteer_list):
     id= np.where(availability[volunteer]==0)
     availability[volunteer][id]= np.nan
         
-    plt.plot(date_list,availability[volunteer]+2*count,color=color, linestyle= linestyle)
+    plt.plot(date_list,availability[volunteer]+2*count, color=color, linestyle= linestyle)
     plt.xticks(rotation=90)
     
 from matplotlib.patches import Patch
@@ -100,8 +116,8 @@ legend_elements = [Line2D([0], [0], color='red', linestyle= "-", lw=1, label='ci
                    Line2D([0], [0], color='black', linestyle= ":", lw=1, label='chauffeur vl')]
 
 plt.legend(handles=legend_elements, loc='upper right', bbox_to_anchor=(1.1, 1.1))
-ytick_loc = np.arange(n_volunteer)*2+1
-plt.yticks(ytick_loc, volunteer_list)
-plt.savefig('test.png',bbox_inches='tight')
+ytick_loc = np.arange(n_to_plot)*2+1
+plt.yticks(ytick_loc, to_plot)
+plt.savefig(f'{plot_name}.png',bbox_inches='tight')
 plt.clf()
 plt.close()
