@@ -8,7 +8,7 @@ créer des équipages ayant différents types de compétences, sur un planning d
 ## Infos colonnes:
 - anon : identifiant des personnes disponibles
 
-- dispo : dates de dispo : ne prendre en compte que la colonne reformatée "dispo", à laquelle est associée une valeur OUI ou NON, selon la disponibilité ou non de la personne sur cette plage horaire
+- dispo : dates de dispo : ne prendre en compte que la colonne reformatée "dispo",représentant le début d'une plage horaire de 2h, à laquelle est associée une valeur OUI ou NON, selon la disponibilité ou non de la personne sur cette plage horaire
 
 - VALUE : valeur associée à la plage horaire, indique si la personne est disponible ou non
 
