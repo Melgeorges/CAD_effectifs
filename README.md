@@ -27,5 +27,7 @@ créer des équipages ayant différents types de compétences, sur un planning d
 
 - les compétences critiques sont les ci et les chauffeurs vpsp (moins nombreux)
 
+- garder au maximum les ci et les chauffeurs vpsp pour ne faire que ca. S'ils sont CI et chauffeur vpsp, à voir en fonction des besoins de la plage horaire.
+
 
 Un grand merci pour votre aide!
