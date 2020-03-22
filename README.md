@@ -30,4 +30,9 @@ créer des équipages ayant différents types de compétences, sur un planning d
 - garder au maximum les ci et les chauffeurs vpsp pour ne faire que ca. S'ils sont CI et chauffeur vpsp, à voir en fonction des besoins de la plage horaire.
 
 
+## Plus d'infos contraintes, et plus facile du coup:
+cf fichier csv que j'ajoute : equipages.csv
+
+
+
 Un grand merci pour votre aide!
