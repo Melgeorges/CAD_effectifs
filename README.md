@@ -15,3 +15,5 @@ pour l'instant j'ai 3 équipages types :
 J'ai essayé de mettre des noms de colonnes transparents, celles qui sont les plus importantes sont chauf_vpsp, ci, PSE2, et chauffeur vl.
 
 les horaires de dispo sont dans la colonne "dispo" associée à la colonne "VALUE" pour svaoir si oui ou non ils sont dispo.
+
+On ne s'interesse qu'aux personnes dispo pour un minimum de 6h d'affilée pour les renfort samu et VLUMS.
