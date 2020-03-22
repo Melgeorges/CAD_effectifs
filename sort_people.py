@@ -85,16 +85,13 @@ for count, volunteer in enumerate(to_plot):
     
     if skills[volunteer][2] == "is_chauf_vpsp":
         linestyle ="--"
-
     elif skills[volunteer][3] == "is_chauffeur_vl":
         linestyle = ":"
 
     if skills[volunteer][4] == "is_ci":
         color = "red"
-        
     elif skills[volunteer][1] == "is_pse2":
         color = "blue"
-
     elif skills[volunteer][0] == "is_pse1":
         color = "green"
 
@@ -111,6 +108,7 @@ from matplotlib.lines import Line2D
 legend_elements = [Line2D([0], [0], color='red', linestyle= "-", lw=1, label='ci'),
                    Line2D([0], [0], color='blue', linestyle= "-", lw=1, label='pse2'),
                    Line2D([0], [0], color='green', linestyle= "-", lw=1, label='pse1'),
+                   Line2D([0], [0], color='grey', linestyle= "-", lw=1, label='no skills'),
                    Line2D([0], [0], color='black', linestyle= "-", lw=1, label='pas chauffeur'),
                    Line2D([0], [0], color='black', linestyle= "--", lw=1, label='chauffeur vpsp'),
                    Line2D([0], [0], color='black', linestyle= ":", lw=1, label='chauffeur vl')]
