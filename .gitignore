@@ -1,0 +1,13 @@
+# Git Ignore File
+
+# Do not ignore
+!/.gitignore
+
+# Logs
+*.log
+
+# Ignore Folders
+__pycache__
+
+# Ignored Files
+test.png
