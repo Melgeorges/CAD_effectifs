@@ -1,19 +1,31 @@
 # CAD_effectifs
 
 
-Les gens sont dans "anon", ce sont maintenant des numéros.
+## Problème général: 
+
+créer des équipages ayant différents types de compétences, sur un planning d'une semaine.
+
+## Infos colonnes:
+- anon : identifiant des personnes disponibles
+
+- dispo : dates de dispo : ne prendre en compte que la colonne reformatée "dispo", à laquelle est associée une valeur OUI ou NON, selon la disponibilité ou non de la personne sur cette plage horaire
+
+- VALUE : valeur associée à la plage horaire, indique si la personne est disponible ou non
+
+- les autres colonnes sont les compétences, avec un booléen pour savoir si le benevole l'a
 
 
-pour l'instant j'ai 3 équipages types : 
+## Equipages :
+- Renfort Samu : plage horaire de 6 à 12h - compétences :  1 ci, 1 chauf_vpsp, 1 ou 2 PSE2
 
-- renfort samu : se compose en priorité d'un "ci", d'un chauffeur vpsp "chauf_vpsp", et de 1 ou 2 PSE2 (variable, idealement 2)
+- VLUMS : plage horaire de 6 à 12h - 2 PSE(1 ou 2) - idealement un chauffeur_vl
 
-- VLUMS : 2 PSE (1 ou 2) - idealement un chauffeur_vl
+- croix rouge chez vous : plage horaire de 4 à 12h - 2 benevoles (pas de compétences particulières) - idealement un chauffeur_vl 
 
-- croix rouge chez vous : 2 benevoles (pas de compétences particulières) - idealement un chauffeur_vl 
+## Choix : 
+- maximiser le nombre de renforts samu, puis le nombre de VLUMS, puis le nombre de croix rouge chez vous
 
-J'ai essayé de mettre des noms de colonnes transparents, celles qui sont les plus importantes sont chauf_vpsp, ci, PSE2, et chauffeur vl.
+- les compétences critiques sont les ci et les chauffeurs vpsp (moins nombreux)
 
-les horaires de dispo sont dans la colonne "dispo" associée à la colonne "VALUE" pour svaoir si oui ou non ils sont dispo.
 
-On ne s'interesse qu'aux personnes dispo pour un minimum de 6h d'affilée pour les renfort samu et VLUMS.
+Un grand merci pour votre aide!
