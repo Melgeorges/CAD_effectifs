@@ -29,3 +29,20 @@ def is_ci(ci):
     else:
         return 'not_ci'
     
+def is_tsa(tsa):
+    if tsa == "True":
+        return 'is_tsa'
+    else:
+        return 'not_tsa'
+
+def is_infirmier(infirmier):
+    if infirmier == "True":
+        return 'is_infirmier'
+    else:
+        return 'not_infirmier'
+
+def is_log(log):
+    if log == "True":
+        return 'is_log'
+    else:
+        return 'not_log'

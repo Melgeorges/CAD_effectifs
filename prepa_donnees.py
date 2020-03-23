@@ -72,7 +72,7 @@ infos_rowed['dispo'] = infos_rowed[['day', 'hour_dispo']].agg(' '.join, axis=1)
 
 infos_rowed['anon'] = infos_rowed.NOM.replace(anon_dict)
 to_send = infos_rowed[['anon', 'chauffeur_vl', 'PSE1', 'PSE2', 'chauf_vpsp', 'maraud', 'psc1', 'log',
-                       'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene',
+                       'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene', 'tsa', 'infirmier',
                        'Date', 'Value', 'day_name', 'dispo']]
 to_send.to_csv("anonymise_competence_dispos.csv")
 
@@ -82,7 +82,7 @@ to_send.to_csv("anonymise_competence_dispos.csv")
 # que pour mel
 infos_rowed['anon'] = infos_rowed.NOM
 to_send = infos_rowed[['anon', 'chauffeur_vl', 'PSE1', 'PSE2', 'chauf_vpsp', 'maraud', 'psc1', 'log',
-                       'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene',
+                       'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene', 'tsa', 'infirmier',
                        'Date', 'Value', 'day_name', 'dispo']]
 
 to_send.to_csv("competence_dispos.csv")
