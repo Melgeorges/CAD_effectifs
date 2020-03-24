@@ -1,6 +1,9 @@
 import pandas as pd
 from datetime import datetime, timedelta
 
+from sort_people import *
+
+date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
 
 date_list = [datetime.strptime(t, '%Y-%m-%d %H:%M') for t in date_list]
 
@@ -40,7 +43,6 @@ def get_volunteer_shift_availability(classe, availability, volunteer, date_list,
         return classe.name
 
 
-day_numb, day_name = 25, "mercredi"
 
 
 class Shifts:
@@ -64,6 +66,9 @@ class Shifts:
         #collision
         self.collision=[]
 
+
+
+day_numb, day_name = 25, "mercredi"
 
 alpha_matin_a = Shifts(name= f"alpha_matin_a_{day_name}",
                      begin= datetime(2020, 3, day_numb, 10, 0),
@@ -103,16 +108,16 @@ alpha_aprem_b.chauf_vpsp=1
 alpha_aprem_b.pse2=1
 alpha_aprem_b.collision = [f"alpha_aprem_a_{day_name}"]
 
-
-shifts = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b]
+shifts={}
+shifts[f"2020-03-{day_numb}"] = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b]
 volunteers_shifts = {}
 
 for vol in volunteer_list:
     shifts_available = []
-    for c in shifts:
-        shifts_available.append(get_volunteer_shift_availability(c, availability, vol, date_list, skills))
-
-    volunteers_shifts[vol] = shifts_available
+    for date in shifts:
+        for c in shifts[date]:
+            shifts_available.append(get_volunteer_shift_availability(c, availability, vol, date_list, skills))
+        volunteers_shifts[vol] = {date: shifts_available}
 
 
 
