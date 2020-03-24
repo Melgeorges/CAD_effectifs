@@ -100,16 +100,16 @@ def make_a_plot(to_plot, plot_name, n_to_plot):
         linestyle = "-"
         color = "gray"
 
-        if skills[volunteer][2] == "is_chauf_vpsp":
+        if skills[volunteer][2] == "chauf_vpsp":
             linestyle ="--"
-        elif skills[volunteer][3] == "is_chauffeur_vl":
+        elif skills[volunteer][3] == "chauf_vl":
             linestyle = ":"
 
-        if skills[volunteer][4] == "is_ci":
+        if skills[volunteer][4] == "ci":
             color = "red"
-        elif skills[volunteer][1] == "is_pse2":
+        elif skills[volunteer][1] == "pse2":
             color = "blue"
-        elif skills[volunteer][0] == "is_pse1":
+        elif skills[volunteer][0] == "pse1":
             color = "green"
 
         # we will put zero to np.nan in order to make the plot cleaner
