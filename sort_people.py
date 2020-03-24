@@ -7,7 +7,7 @@ import numpy as np
 def get_volunteer_skills_and_availability():
     """
     the goal of the script is to return the list of dates, the list of volunteers,
-    the skills of volunteers and their availability (1 or 0) corresponding to the time of the list of dates.
+    the skills of volunteers and their availability (1 or 0) corr*esponding to the time of the list of dates.
     
     the output is
     date_list: simple list containing the relevant dates
@@ -16,7 +16,7 @@ def get_volunteer_skills_and_availability():
             is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
     availability: dictionnary, availability[volunteer] is a 1d array containing 1 if volunteer is there 0 otherwise
     """
-    csvfile= open("anonymise_competence_dispos.csv", mode='r')
+    csvfile= open("competence_dispos.csv", mode='r')
     csv_reader = csv.DictReader(csvfile)
     volunteer_list = []
     date_list = []
@@ -37,7 +37,7 @@ def get_volunteer_skills_and_availability():
         availability[volunteer]= []
 
     #don't know why I need to repoen (oh well...)
-    csvfile= open("anonymise_competence_dispos.csv", mode='r')
+    csvfile= open("competence_dispos.csv", mode='r')
     csv_reader = csv.DictReader(csvfile)
     for row in csv_reader:
         volunteer = row["anon"]
@@ -143,29 +143,37 @@ def make_a_plot(to_plot, plot_name, n_to_plot):
 
 
 
+from datetime import datetime
+now = datetime.now().strftime('%Y-%m-%d')
 
 ci = keep_one_skill("is_ci")
-make_a_plot(ci, "ci_dispos", len(ci))
+make_a_plot(ci, f"{now}_ci_dispos", len(ci))
 
 vpsp = keep_one_skill("is_chauf_vpsp")
-make_a_plot(vpsp, "vpsp_dispos", len(vpsp))
+make_a_plot(vpsp, f"{now}_vpsp_dispos", len(vpsp))
 
 log = keep_one_skill("is_log")
-make_a_plot(log, "log_dispo", len(log))
+make_a_plot(log, f"{now}_log_dispo", len(log))
 
 pse2 = keep_one_skill("is_pse2")
-make_plots(pse2, "pse2_dispos", len(pse2))
+make_plots(pse2, f"{now}_pse2_dispos", len(pse2))
 
 pse1 = keep_one_skill("is_pse1", ["is_ci", "is_pse2"])
-make_plots(pse1, "pse1_dispos", len(pse1))
+make_plots(pse1, f"{now}_pse1_dispos", len(pse1))
 
 tsa = keep_one_skill("is_tsa")
-make_a_plot(tsa, "tsa_dispos", len(tsa))
+make_a_plot(tsa, f"{now}_tsa_dispos", len(tsa))
 
 infirmier = keep_one_skill("is_infirmier")
-make_a_plot(infirmier, "infirmier_dispos", len(infirmier))
+make_a_plot(infirmier, f"{now}_infirmier_dispos", len(infirmier))
 
 autres = remove_skills(["is_pse2", "is_chauf_vpsp", "is_ci", "is_tsa", "is_infirmier", "is_log", "is_pse1"])
-make_plots(autres, "non_secouriste", len(autres))
+make_plots(autres, f"{now}_non_secouriste", len(autres))
+
+
+
+
+
+
 
 
