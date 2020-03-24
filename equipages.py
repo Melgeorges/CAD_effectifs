@@ -27,33 +27,61 @@ day_numb, day_name = 25, "mercredi"
 
 
 class Shifts:
-    def __init__(self, name, begin, end, priority, skills: dict):
+    def __init__(self, name, begin, end, priority):
         self.name=name
         self.begin=begin
         self.end=end
         self.priority=priority
 
         # skills for the shift
-        self.ci = skills["ci"]
-        self.pse1 = skills["pse1"]
-        self.pse2 = skills["pse2"]
-        self.chauf_vpsp = skills["chauf_vpsp"]
-        self.chauf_vl = skills["chauf_vl"]
-        self.tsa = skills["tsa"]
-        self.log = skills["log"]
-        self.infirmier = skills["infirmier"]
+        self.ci = 0
+        self.pse1 = 0
+        self.pse2 = 0
+        self.chauf_vpsp = 0
+        self.chauf_vl = 0
+        self.tsa = 0
+        self.log = 0
+        self.infirmier = 0
+        self.noskills = 0
 
+        #collision
+        self.collision=[]
 
-alpha_matin = Shifts(name= "alpha_matin",
+alpha_matin_a = Shifts(name= f"alpha_matin_a_{day_name}",
                      begin= datetime(2020, 3, day_numb, 10, 0),
                      end= datetime(2020, 3, day_numb, 16, 0),
-                     priority= 1000,
-                     {})
+                     priority= 1000)
+alpha_matin_a.ci=1
+alpha_matin_a.chauf_vpsp=1
+alpha_matin_a.pse2=1
 
-shifts = {f"alpha_matin_{day_name}": {"begin": datetime(2020, 3, day_numb, 10, 0),
-                                      "end": datetime(2020, 3, day_numb, 16, 0),
-                                      "skills": ["is_ci", "is_pse2", "is_chauf_vpsp"],
-                                      "priority": 1000}
+alpha_matin_b = Shifts(name= f"alpha_matin_b_{day_name}",
+                     begin= datetime(2020, 3, day_numb, 10, 0),
+                     end= datetime(2020, 3, day_numb, 16, 0),
+                     priority= 1000)
+alpha_matin_b.ci = 1
+alpha_matin_b.chauf_vpsp=1
+alpha_matin_b.pse2=1
+
+alpha_matin_a = Shifts(name= f"alpha_matin_a_{day_name}",
+                     begin= datetime(2020, 3, day_numb, 10, 0),
+                     end= datetime(2020, 3, day_numb, 16, 0),
+                     priority= 1000)
+alpha_matin_a.ci=1
+alpha_matin_a.chauf_vpsp=1
+alpha_matin_a.pse2=1
+
+alpha_matin_b = Shifts(name= f"alpha_matin_b_{day_name}",
+                     begin= datetime(2020, 3, day_numb, 10, 0),
+                     end= datetime(2020, 3, day_numb, 16, 0),
+                     priority= 1000)
+alpha_matin_b.ci = 1
+alpha_matin_b.chauf_vpsp=1
+alpha_matin_b.pse2=1
+
+
+
+
           f"alpha_aprem_{day_name}": {"begin": datetime(2020, 3, day_numb, 16, 0),
                                       "end": datetime(2020, 3, day_numb, 23, 0),
                                       "skills": ["is_ci", "is_pse2", "is_chauf_vpsp"]},
