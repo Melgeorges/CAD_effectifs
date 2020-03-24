@@ -26,7 +26,6 @@ def get_volunteer_shift_availability(shift_beginning, shift_ending, shift_name, 
 day_numb, day_name = 25, "mercredi"
 
 
-
 class Shifts:
     def __init__(self, name, begin, end, priority, skills: dict):
         self.name=name
@@ -35,6 +34,7 @@ class Shifts:
         self.priority=priority
 
         # skills for the shift
+        self.ci = skills["ci"]
         self.pse1 = skills["pse1"]
         self.pse2 = skills["pse2"]
         self.chauf_vpsp = skills["chauf_vpsp"]
@@ -44,7 +44,11 @@ class Shifts:
         self.infirmier = skills["infirmier"]
 
 
-alpha_matin = Shifts()
+alpha_matin = Shifts(name= "alpha_matin",
+                     begin= datetime(2020, 3, day_numb, 10, 0),
+                     end= datetime(2020, 3, day_numb, 16, 0),
+                     priority= 1000,
+                     {})
 
 shifts = {f"alpha_matin_{day_name}": {"begin": datetime(2020, 3, day_numb, 10, 0),
                                       "end": datetime(2020, 3, day_numb, 16, 0),
