@@ -7,22 +7,27 @@ class Volunteer:
     def __init__(self, identity, skills, availability):
         self.identity = identity
         # skills order is is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
-        self.is_pse1 = True if skills[0] == "is_pse1" else False
-        self.is_pse2 = True if skills[1] == "is_pse2" else False
-        self.is_chauf_vpsp = True if skills[2] == "is_chauf_vpsp" else False
-        self.is_chauf_vl = True if skills[3] == "is_chauf_vl" else False
-        self.is_ci = True if skills[4] == "is_ci" else False
+        self.pse1 = True if skills[0] == "is_pse1" else False
+        self.pse2 = True if skills[1] == "is_pse2" else False
+        self.chauf_vpsp = True if skills[2] == "is_chauf_vpsp" else False
+        self.chauf_vl = True if skills[3] == "is_chauf_vl" else False
+        self.ci = True if skills[4] == "is_ci" else False
+        self.tsa = True if skills[5] == "is_tsa" else False
+        self.log = True if skills[7] == "is_log" else False
+        self.infirmier = True if skills[6] == "is_infirmier" else False
         self.availability = availability
 
     def __repr__(self):
-        return "Volunteer %s, is_pse1: %r, is_pse2: %r, " \
-               "is_chauf_vpsp: %r, is_chauffeur_vl: %r, " \
-               "is_ci: %r, availability: %r" % (self.identity,
-                                                self.is_pse1,
-                                                self.is_pse2,
-                                                self.is_chauf_vpsp,
-                                                self.is_chauf_vl,
-                                                self.is_ci,
+        return "Volunteer %s, pse1: %r, pse2: %r, " \
+               "chauf_vpsp: %r, chauffeur_vl: %r, " \
+               "ci: %r, tsa: %r, log %r, availability: %r" % (self.identity,
+                                                self.pse1,
+                                                self.pse2,
+                                                self.chauf_vpsp,
+                                                self.chauf_vl,
+                                                self.ci,
+                                                self.tsa,
+                                                self.log,
                                                 self.availability)
 
 
@@ -34,7 +39,7 @@ def create_volunteers(volunteer_list, skills, availability):
     return structured_volunteer_list
 
 
-def create_model(volunteer_list, date_list):
+def create_model(volunteer_list, shift_list):
     model = cp_model.CpModel()
     return model
 
