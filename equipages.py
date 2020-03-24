@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 date_list = [datetime.strptime(t, '%Y-%m-%d %H:%M') for t in date_list]
 
 
-def get_volunteer_shift_availability(shift_beginning, shift_ending, shift_name, availability, volunteer, date_list):
+def get_volunteer_shift_availability(classe, availability, volunteer, date_list):
 
-    date = shift_beginning
+    date = classe.begin
     date_available = np.array(date_list)[availability[volunteer].astype(bool)]
     volunteer_shift = 0
     counter = 0
@@ -47,21 +47,6 @@ class Shifts:
         #collision
         self.collision=[]
 
-alpha_matin_a = Shifts(name= f"alpha_matin_a_{day_name}",
-                     begin= datetime(2020, 3, day_numb, 10, 0),
-                     end= datetime(2020, 3, day_numb, 16, 0),
-                     priority= 1000)
-alpha_matin_a.ci=1
-alpha_matin_a.chauf_vpsp=1
-alpha_matin_a.pse2=1
-
-alpha_matin_b = Shifts(name= f"alpha_matin_b_{day_name}",
-                     begin= datetime(2020, 3, day_numb, 10, 0),
-                     end= datetime(2020, 3, day_numb, 16, 0),
-                     priority= 1000)
-alpha_matin_b.ci = 1
-alpha_matin_b.chauf_vpsp=1
-alpha_matin_b.pse2=1
 
 alpha_matin_a = Shifts(name= f"alpha_matin_a_{day_name}",
                      begin= datetime(2020, 3, day_numb, 10, 0),
@@ -70,6 +55,7 @@ alpha_matin_a = Shifts(name= f"alpha_matin_a_{day_name}",
 alpha_matin_a.ci=1
 alpha_matin_a.chauf_vpsp=1
 alpha_matin_a.pse2=1
+alpha_matin_a.collision = [f"alpha_matin_b_{day_name}"]
 
 alpha_matin_b = Shifts(name= f"alpha_matin_b_{day_name}",
                      begin= datetime(2020, 3, day_numb, 10, 0),
@@ -78,35 +64,37 @@ alpha_matin_b = Shifts(name= f"alpha_matin_b_{day_name}",
 alpha_matin_b.ci = 1
 alpha_matin_b.chauf_vpsp=1
 alpha_matin_b.pse2=1
+alpha_matin_b.collision = [f"alpha_matin_a_{day_name}"]
+
+
+alpha_aprem_a = Shifts(name= f"alpha_aprem_a_{day_name}",
+                     begin= datetime(2020, 3, day_numb, 16, 0),
+                     end= datetime(2020, 3, day_numb, 23, 0),
+                     priority= 1000)
+alpha_aprem_a.ci=1
+alpha_aprem_a.chauf_vpsp=1
+alpha_aprem_a.pse2=1
+alpha_aprem_a.collision = [f"alpha_aprem_b_{day_name}"]
+
+
+alpha_aprem_b = Shifts(name= f"alpha_matin_b_{day_name}",
+                     begin= datetime(2020, 3, day_numb, 16, 0),
+                     end= datetime(2020, 3, day_numb, 20, 0),
+                     priority= 1000)
+alpha_aprem_b.ci = 1
+alpha_aprem_b.chauf_vpsp=1
+alpha_aprem_b.pse2=1
+alpha_aprem_b.collision = [f"alpha_aprem_a_{day_name}"]
 
 
 
-
-          f"alpha_aprem_{day_name}": {"begin": datetime(2020, 3, day_numb, 16, 0),
-                                      "end": datetime(2020, 3, day_numb, 23, 0),
-                                      "skills": ["is_ci", "is_pse2", "is_chauf_vpsp"]},
-          f"tsa_matin_{day_name}": {"begin": datetime(2020, 3, day_numb, 10, 0),
-                                      "end": datetime(2020, 3, day_numb, 16, 0),
-                                      "skills": ["is_tsa"]},
-          f"regul_aprem_{day_name}": {"begin": datetime(2020, 3, day_numb, 16, 0),
-                                      "end": datetime(2020, 3, day_numb, 23, 0),
-                                      "skills": ["is_tsa"]},
-          f"coviad_{day_name}": {"begin": datetime(2020, 3, day_numb, 20, 0),
-                                      "end": datetime(2020, 3, day_numb, 23, 0),
-                                      "skills": ["is_pse2"]},
-          f"vlums_{day_name}": {"begin": datetime(2020, 3, day_numb, 10, 0),
-                                 "end": datetime(2020, 3, day_numb, 20, 0),
-                                 "skills": ["is_pse2", "is_ci"]},
-
-          }
-
-
+shifts = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b]
 volunteers_shifts={}
+
 for vol in volunteer_list:
     shifts_available = []
-    for i in range(len(shift_begin)):
-        shifts_available.append(get_volunteer_shift_availability(shift[i][0], shift_end[i][1], shift_names[i],
-                                                                 availability, vol, date_list))
+    for c in shifts:
+        shifts_available.append(get_volunteer_shift_availability(c, availability, vol, skills, date_list)
 
     volunteers_shifts[vol] = shifts_available
 

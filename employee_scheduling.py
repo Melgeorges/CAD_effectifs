@@ -42,7 +42,7 @@ def create_volunteers(volunteer_list, skills, availability):
 def create_model(volunteer_list, date_list, shift_list):
     # precomputations
     identity_list = []
-    volunteer_dict = []
+    volunteer_dict = {vol.identity: vol for vol in volunteer_list}
     for v in volunteer_list:
         identity_list += v.identity
 
