@@ -5,22 +5,39 @@ from datetime import datetime, timedelta
 date_list = [datetime.strptime(t, '%Y-%m-%d %H:%M') for t in date_list]
 
 
-def get_volunteer_shift_availability(classe, availability, volunteer, date_list):
+def get_volunteer_shift_availability(classe, availability, volunteer, date_list, skills):
 
     date = classe.begin
     date_available = np.array(date_list)[availability[volunteer].astype(bool)]
     volunteer_shift = 0
     counter = 0
-    while date < shift_ending-timedelta(hours=2):
+    while date < classe.end-timedelta(hours=2):
         if date in date_available:
-            volunteer_shift += 1
+            if classe.ci > 0 and "ci" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.pse2 > 0 and "pse2" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.chauf_vpsp > 0 and "chauf_vpsp" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.chauf_vl > 0 and "chauf_vl" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.pse1 > 0 and "pse1" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.tsa > 0 and "tsa" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.infirmier > 0 and "infirmier" in skills[volunteer]:
+                volunteer_shift += 1
+            elif classe.log > 0 and "log" in skills[volunteer]:
+                volunteer_shift += 1
+            else:
+                volunteer_shift += 1
         else:
             pass
         date = date + timedelta(hours=2)
         counter += 1
 
     if counter == volunteer_shift:
-        return shift_name
+        return classe.name
 
 
 day_numb, day_name = 25, "mercredi"
@@ -77,24 +94,23 @@ alpha_aprem_a.pse2=1
 alpha_aprem_a.collision = [f"alpha_aprem_b_{day_name}"]
 
 
-alpha_aprem_b = Shifts(name= f"alpha_matin_b_{day_name}",
-                     begin= datetime(2020, 3, day_numb, 16, 0),
-                     end= datetime(2020, 3, day_numb, 20, 0),
-                     priority= 1000)
+alpha_aprem_b = Shifts(name=f"alpha_matin_b_{day_name}",
+                       begin= datetime(2020, 3, day_numb, 16, 0),
+                       end= datetime(2020, 3, day_numb, 20, 0),
+                       priority= 1000)
 alpha_aprem_b.ci = 1
 alpha_aprem_b.chauf_vpsp=1
 alpha_aprem_b.pse2=1
 alpha_aprem_b.collision = [f"alpha_aprem_a_{day_name}"]
 
 
-
 shifts = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b]
-volunteers_shifts={}
+volunteers_shifts = {}
 
 for vol in volunteer_list:
     shifts_available = []
     for c in shifts:
-        shifts_available.append(get_volunteer_shift_availability(c, availability, vol, skills, date_list)
+        shifts_available.append(get_volunteer_shift_availability(c, availability, vol, date_list, skills))
 
     volunteers_shifts[vol] = shifts_available
 
