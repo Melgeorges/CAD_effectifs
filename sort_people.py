@@ -16,7 +16,7 @@ def get_volunteer_skills_and_availability():
             is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
     availability: dictionnary, availability[volunteer] is a 1d array containing 1 if volunteer is there 0 otherwise
     """
-    csvfile= open("competence_dispos.csv", mode='r')
+    csvfile= open("anonymise_competence_dispos.csv", mode='r')
     csv_reader = csv.DictReader(csvfile)
     volunteer_list = []
     date_list = []
@@ -37,7 +37,7 @@ def get_volunteer_skills_and_availability():
         availability[volunteer]= []
 
     #don't know why I need to repoen (oh well...)
-    csvfile= open("competence_dispos.csv", mode='r')
+    csvfile= open("anonymise_competence_dispos.csv", mode='r')
     csv_reader = csv.DictReader(csvfile)
     for row in csv_reader:
         volunteer = row["anon"]
