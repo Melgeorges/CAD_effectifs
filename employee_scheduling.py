@@ -39,8 +39,24 @@ def create_volunteers(volunteer_list, skills, availability):
     return structured_volunteer_list
 
 
-def create_model(volunteer_list, shift_list):
+def create_model(volunteer_list, date_list, shift_list):
+    # precomputations
+    identity_list = []
+    volunteer_dict = []
+    for v in volunteer_list:
+        identity_list += v.identity
+
     model = cp_model.CpModel()
+    assignment = {}
+    for v in volunteer_list:
+        for d in date_list:
+            for s in shift_list:
+                if s in v.availability[d]:
+                    assignment[(v.identity, d, s.name)] = model.NewBoolVar('v-%r_d-%r_s-%r' % (v.identity, d, s.name))
+    for d in date_list:
+        for s in shift_list:
+            model.Add(sum(assignment[(identity, d, s.name)] for identity,
+                    identity in enumerate(identity_list) if skills[volunteer][4] == "is_ci") == 1)
     return model
 
 
