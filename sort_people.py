@@ -76,10 +76,6 @@ def remove_skills(to_remove: list):
             vol.append(key)
     return vol
 
-date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
-n_volunteer = len(volunteer_list)
-print("number of volunteer", n_volunteer)
-
 
 # The aim of this plot is to start visualising the data in order to think about how
 # to make groups
@@ -143,32 +139,7 @@ def make_a_plot(to_plot, plot_name, n_to_plot):
 
 
 
-from datetime import datetime
-now = datetime.now().strftime('%Y-%m-%d')
 
-ci = keep_one_skill("is_ci")
-make_a_plot(ci, f"{now}_ci_dispos", len(ci))
-
-vpsp = keep_one_skill("is_chauf_vpsp")
-make_a_plot(vpsp, f"{now}_vpsp_dispos", len(vpsp))
-
-log = keep_one_skill("is_log")
-make_a_plot(log, f"{now}_log_dispo", len(log))
-
-pse2 = keep_one_skill("is_pse2")
-make_plots(pse2, f"{now}_pse2_dispos", len(pse2))
-
-pse1 = keep_one_skill("is_pse1", ["is_ci", "is_pse2"])
-make_plots(pse1, f"{now}_pse1_dispos", len(pse1))
-
-tsa = keep_one_skill("is_tsa")
-make_a_plot(tsa, f"{now}_tsa_dispos", len(tsa))
-
-infirmier = keep_one_skill("is_infirmier")
-make_a_plot(infirmier, f"{now}_infirmier_dispos", len(infirmier))
-
-autres = remove_skills(["is_pse2", "is_chauf_vpsp", "is_ci", "is_tsa", "is_infirmier", "is_log", "is_pse1"])
-make_plots(autres, f"{now}_non_secouriste", len(autres))
 
 
 
