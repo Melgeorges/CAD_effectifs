@@ -44,19 +44,37 @@ def create_model(volunteer_list, date_list, shift_list):
     identity_list = []
     volunteer_dict = {vol.identity: vol for vol in volunteer_list}
     for v in volunteer_list:
-        identity_list += v.identity
+        identity_list.append(v.identity)
 
     model = cp_model.CpModel()
     assignment = {}
+    # creation of boolean variables 1 variable/(volunteer, date, shift where the volunteer is available)
     for v in volunteer_list:
         for d in date_list:
             for s in shift_list:
-                if s in v.availability[d]:
-                    assignment[(v.identity, d, s.name)] = model.NewBoolVar('v-%r_d-%r_s-%r' % (v.identity, d, s.name))
+                if s.name in v.availability[d]:
+                    assignment[(v.identity, d, s.name)] = model.NewBoolVar('assignment_v%rd%rs%r' % (v.identity, d, s.name))
+
+    # constraints: each shift is populated
     for d in date_list:
         for s in shift_list:
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if skills[volunteer][4] == "is_ci") == 1)
+                    identity in enumerate(identity_list) if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]) >= s.ci)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity,
+                    identity in enumerate(identity_list) if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity,
+                    identity in enumerate(identity_list) if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity,
+                    identity in enumerate(identity_list) if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
+                          volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
+                          volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
+                          volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
+                          s.name in volunteer_dict[identity].availability[d]) >= s.log)
+
     return model
 
 
