@@ -3,6 +3,41 @@ from ortools.sat.python import cp_model
 from sort_people import get_volunteer_skills_and_availability
 
 
+class Volunteer:
+    def __init__(self, identity, skills, availability):
+        self.identity = identity
+        # skills order is is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
+        self.is_pse1 = True if skills[0] == "is_pse1" else False
+        self.is_pse2 = True if skills[1] == "is_pse2" else False
+        self.is_chauf_vpsp = True if skills[2] == "is_chauf_vpsp" else False
+        self.is_chauf_vl = True if skills[3] == "is_chauf_vl" else False
+        self.is_ci = True if skills[4] == "is_ci" else False
+        self.availability = availability
+
+    def __repr__(self):
+        return "Volunteer %s, is_pse1: %r, is_pse2: %r, " \
+               "is_chauf_vpsp: %r, is_chauffeur_vl: %r, " \
+               "is_ci: %r, availability: %r" % (self.identity,
+                                                self.is_pse1,
+                                                self.is_pse2,
+                                                self.is_chauf_vpsp,
+                                                self.is_chauf_vl,
+                                                self.is_ci,
+                                                self.availability)
+
+
+def create_volunteers(volunteer_list, skills, availability):
+    structured_volunteer_list = []
+    for v in volunteer_list:
+        new_volunteer = Volunteer(v, skills[v], availability[v])
+        structured_volunteer_list.append(new_volunteer)
+    return structured_volunteer_list
+
+
+def create_model(volunteer_list, date_list):
+    model = cp_model.CpModel()
+    return model
+
 
 class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
     """Print intermediate solutions."""
@@ -36,8 +71,6 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
         return self._solution_count
 
 
-
-
 def main():
     # Data.
     date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
@@ -47,7 +80,7 @@ def main():
     # print("availability",len(availability),availability)
     num_volunteers = len(volunteer_list)
     num_shifts = 12
-    num_days = int(len(date_list)/num_shifts)
+    num_days = int(len(date_list) / num_shifts)
     # all_volunteers = range(num_volunteers)
     # all_shifts = range(num_shifts)
     # all_days = range(num_days)
@@ -63,18 +96,22 @@ def main():
     for n in all_volunteers:
         for d in all_days:
             for s in all_shifts:
-                shifts[(n, d,
-                        s)] = model.NewBoolVar('shift_n%id%is%i' % (n, d, s))
+                shifts[(n, d, s)] = model.NewBoolVar('shift_n%id%is%i' % (n, d, s))
     # print (shifts)
 
     # Constraints
     # Renfort Samu : plage horaire de 6 à 12h - compétences : 1 ci, 1 chauf_vpsp, 1 ou 2 PSE2
     for d in all_days:
         for s in all_shifts:
-            if s>=3 and s<=5:
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][4]=="is_ci") == 1)
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][2]=="is_chauf_vpsp") == 1)
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][1]=="is_pse2") == 1 or sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][1]=="is_pse2") == 2)
+            if s >= 3 and s <= 5:
+                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
+                              skills[volunteer][4] == "is_ci") == 1)
+                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
+                              skills[volunteer][2] == "is_chauf_vpsp") == 1)
+                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
+                              skills[volunteer][1] == "is_pse2") == 1 or sum(
+                    shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
+                    skills[volunteer][1] == "is_pse2") == 2)
     # VLUMS : plage horaire de 6 à 12h - 2 PSE(1 ou 2) - idealement un chauffeur_vl
     # for d in all_days:
     #     for s in all_shifts:
@@ -85,9 +122,10 @@ def main():
     # croix rouge chez vous : plage horaire de 4 à 12h - 2 benevoles (pas de compétences particulières) - idealement un chauffeur_vl
     for d in all_days:
         for s in all_shifts:
-            if s>=2 and s<=5:
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][3]=="is_chauffeur_vl") == 1) #TODO: "idéalement"
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) ) == 2)
+            if s >= 2 and s <= 5:
+                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
+                              skills[volunteer][3] == "is_chauffeur_vl") == 1)  # TODO: "idéalement"
+                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list)) == 2)
 
     # Each volunteer works at most four shift per day.
     for n in all_volunteers:
@@ -114,8 +152,8 @@ def main():
     # Display the first solution.
     a_few_solutions = range(1)
     solution_printer = VolunteersPartialSolutionPrinter(shifts, num_volunteers,
-                                                    num_days, num_shifts,
-                                                    a_few_solutions)
+                                                        num_days, num_shifts,
+                                                        a_few_solutions)
     solver.SearchForAllSolutions(model, solution_printer)
 
     # Statistics.
