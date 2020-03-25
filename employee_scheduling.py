@@ -5,36 +5,34 @@ from datastructures import Shifts, Volunteer
 from equipages import *
 from process_data import *
 
+# volunteer availability and skills file
+volunteers_csv = "anonymise_competence_dispos.csv"
+
+# shifts definition file
+shifts_csv = "equipages_formatted.csv"
 
 
-
-def create_volunteers(volunteer_list, skills, availability):
-    structured_volunteer_list = []
-    for v in volunteer_list:
-        new_volunteer = Volunteer(v, skills[v], availability[v])
-        structured_volunteer_list.append(new_volunteer)
-    return structured_volunteer_list
-
-
-def create_model(model, volunteer_list, date_list, shift_list):
+def create_model(model, volunteer_dict, date_list, shift_dict):
     # precomputations
     identity_list = []
-    volunteer_dict = {vol.identity: vol for vol in volunteer_list}
-    for v in volunteer_list:
-        identity_list.append(v.identity)
+    for vid in volunteer_dict:
+        identity_list.append(volunteer_dict[vid].identity)
 
     assignment = {}
     #date_list = list(set([d.split(" ")[0] for d in date_list]))
     # creation of boolean variables 1 variable/(volunteer, date, shift where the volunteer is available)
-    for v in volunteer_list:
+    for vid in volunteer_dict:
+        v = volunteer_dict[vid]
         for d in date_list:
-            for s in shift_list:
+            for sid in shift_dict:
+                s = shift_dict[sid]
                 if s.name in v.availability[d]:
                     assignment[(v.identity, d, s.name)] = model.NewBoolVar('assignment_v%rd%rs%r' % (v.identity, d, s.name))
 
     # constraints: each shift is populated
     for d in date_list:
-        for s in shift_list:
+        for sid in shift_dict:
+            s = shift_dict[sid]
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
                     identity in enumerate(identity_list) if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]) >= s.ci)
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
@@ -51,10 +49,10 @@ def create_model(model, volunteer_list, date_list, shift_list):
                           volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
             model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
                           s.name in volunteer_dict[identity].availability[d]) == s.noskills)
-    print(assignment)
-    print(date_list)
-    print(shift_list)
-    print(volunteer_list)
+    #print(assignment)
+    #print(date_list)
+    #print(shift_list)
+    #print(volunteer_list)
     return assignment
 
 
@@ -77,7 +75,8 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
                 print('date %r' % d)
                 for identity in self._volunteer_dict:
                     is_working = False
-                    for s in self._shifts:
+                    for sid in self._shifts:
+                        s = self._shifts[sid]
                         if s in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
                             is_working = True
                             print('  Volunteer %r works shift %i' % (identity, s.name))
@@ -92,95 +91,18 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
 
 def main():
     # Data.
-    date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
-    print(skills)
-    availability = get_shifts_availability(date_list, volunteer_list, skills, availability)
-    donotuse, shifts = create_shifts()
-    date_list = [datetime(2020, 3, 29)]
-    volunteers = create_volunteers(volunteer_list, skills, availability)
-    volunteer_dict = {vol.identity: vol for vol in volunteers}
-    # print("date_list",len(date_list),date_list)
-    # print("volunteer_list",len(volunteer_list),volunteer_list)
-    # print("skills",len(skills),skills)
-    # print("availability",len(availability),availability)
-    model = cp_model.CpModel();
-    assignment = create_model(model, volunteers, date_list, shifts)
-    '''
-    num_volunteers = len(volunteer_list)
-    num_shifts = 12
-    num_days = int(len(date_list) / num_shifts)
-    # all_volunteers = range(num_volunteers)
-    # all_shifts = range(num_shifts)
-    # all_days = range(num_days)
-    all_volunteers = range(num_volunteers)
-    all_shifts = range(num_shifts)
-    all_days = range(num_days)
-    # Creates the model.
+    date_list, volunteer_dict, shift_dict = parse_shifts_volunteers(shifts_csv, volunteers_csv)
     model = cp_model.CpModel()
 
-    # Creates shift variables.
-    # shifts[(n, d, s)]: volunteer 'n' works shift 's' on day 'd'.
-    shifts = {}
-    for n in all_volunteers:
-        for d in all_days:
-            for s in all_shifts:
-                shifts[(n, d, s)] = model.NewBoolVar('shift_n%id%is%i' % (n, d, s))
-    # print (shifts)
+    assignment = create_model(model, volunteer_dict, date_list, shift_dict)
 
-    # Constraints
-    # Renfort Samu : plage horaire de 6 à 12h - compétences : 1 ci, 1 chauf_vpsp, 1 ou 2 PSE2
-    for d in all_days:
-        for s in all_shifts:
-            if s >= 3 and s <= 5:
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
-                              skills[volunteer][4] == "is_ci") == 1)
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
-                              skills[volunteer][2] == "is_chauf_vpsp") == 1)
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
-                              skills[volunteer][1] == "is_pse2") == 1 or sum(
-                    shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
-                    skills[volunteer][1] == "is_pse2") == 2)
-    # VLUMS : plage horaire de 6 à 12h - 2 PSE(1 ou 2) - idealement un chauffeur_vl
-    # for d in all_days:
-    #     for s in all_shifts:
-    #         if s>=3 and s<=5:
-    #             model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][3]=="is_chauffeur_vl") == 1) #TODO: "idéalement"
-    #             model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if skills[volunteer][1]=="is_pse2" or skills[volunteer][0]=="is_pse1") == 2)
-
-    # croix rouge chez vous : plage horaire de 4 à 12h - 2 benevoles (pas de compétences particulières) - idealement un chauffeur_vl
-    for d in all_days:
-        for s in all_shifts:
-            if s >= 2 and s <= 5:
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list) if
-                              skills[volunteer][3] == "is_chauffeur_vl") == 1)  # TODO: "idéalement"
-                model.Add(sum(shifts[(n, d, s)] for n, volunteer in enumerate(volunteer_list)) == 2)
-
-    # Each volunteer works at most four shift per day.
-    for n in all_volunteers:
-        for d in all_days:
-            model.Add(sum(shifts[(n, d, s)] for s in all_shifts) <= 4)
-
-    # min_shifts_per_volunteer is the largest integer such that every volunteer
-    # can be assigned at least that many shifts. If the number of volunteers doesn't
-    # divide the total number of shifts over the schedule period,
-    # some volunteers have to work one more shift, for a total of
-    # min_shifts_per_volunteer + 1.
-
-    # min_shifts_per_volunteer = (num_shifts * num_days) // num_volunteers
-    # max_shifts_per_volunteer = min_shifts_per_volunteer + 1
-    # for n in all_volunteers:
-    #     num_shifts_worked = sum(
-    #         shifts[(n, d, s)] for d in all_days for s in all_shifts)
-    #     model.Add(min_shifts_per_volunteer <= num_shifts_worked)
-    #     model.Add(num_shifts_worked <= max_shifts_per_volunteer)
-    '''
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
     solver.parameters.linearization_level = 0
     # Display the first solution.
     a_few_solutions = range(1)
     solution_printer = VolunteersPartialSolutionPrinter(assignment, volunteer_dict,
-                                                        date_list, shifts,
+                                                        date_list, shift_dict,
                                                         a_few_solutions)
     solver.SearchForAllSolutions(model, solution_printer)
 
@@ -196,6 +118,9 @@ def main():
 if __name__ == '__main__':
     # d, v, a = parse_volunteers("anonymise_competence_dispos.csv")
     # s = parse_shifts("equipages_formatted.csv")
-    date_list, volunteer_dict, shift_dict = parse_shifts_volunteers("equipages_formatted.csv", "anonymise_competence_dispos.csv")
-    x=1
-    #main()
+    #date_list, volunteer_dict, shift_dict = parse_shifts_volunteers("equipages_formatted.csv", "anonymise_competence_dispos.csv")
+    #model = cp_model.CpModel()
+    #assignment = create_model(model, volunteer_dict, date_list, shift_dict)
+
+    main()
+    x = 1
