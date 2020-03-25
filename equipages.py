@@ -126,7 +126,8 @@ def create_shifts():
                              f"alpha_aprem_b", f"vlums_a"]
 
         shifts[f"2020-03-{day_numb}"] = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b, vlums_a, vlums_b]
-    return shifts
+        shift_schedul = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b, vlums_a, vlums_b]
+    return shifts, shift_schedul
 
 
 def get_shifts_availability(date_list, volunteer_list, skills, availability):
