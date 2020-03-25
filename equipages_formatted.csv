@@ -1,0 +1,17 @@
+name,skill,number,begin,end,priority
+Alpha_1_matin,ci,1,08,16,1000
+Alpha_1_matin,chauf_vpsp,1,08,16,1000
+Alpha_1_matin,PSE2,1,08,16,1000
+Alpha_2_matin,ci,1,08,16,1000
+Alpha_2_matin,chauf_vpsp,1,08,16,1000
+Alpha_2_matin,PSE2,1,08,16,1000
+Alpha_1_apres_midi,ci,1,16,24,1000
+Alpha_1_apres_midi,chauf_vpsp,1,16,24,1000
+Alpha_1_apres_midi,PSE2,1,16,24,1000
+Alpha_2_apres_midi,ci,1,16,24,1000
+Alpha_2_apres_midi,chauf_vpsp,1,16,24,1000
+Alpha_2_apres_midi,PSE2,1,16,24,1000
+VLUMS_1,ci,1,10,20,100
+VLUMS_1,PSE2,2,10,20,100
+VLUMS_2,ci,1,10,20,100
+VLUMS_2,PSE2,2,10,20,100
