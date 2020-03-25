@@ -48,6 +48,7 @@ def create_model(model, volunteer_list, date_list, shift_list):
         identity_list.append(v.identity)
 
     assignment = {}
+    date_list = list(set([d.split(" ")[0] for d in date_list]))
     # creation of boolean variables 1 variable/(volunteer, date, shift where the volunteer is available)
     for v in volunteer_list:
         for d in date_list:
