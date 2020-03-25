@@ -16,7 +16,7 @@ def get_volunteer_skills_and_availability():
             is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
     availability: dictionnary, availability[volunteer] is a 1d array containing 1 if volunteer is there 0 otherwise
     """
-    csvfile= open("anonymise_competence_dispos.csv", mode='r')
+    csvfile= open("competence_dispos.csv", mode='r')
     csv_reader = csv.DictReader(csvfile)
     volunteer_list = []
     date_list = []
@@ -37,7 +37,7 @@ def get_volunteer_skills_and_availability():
         availability[volunteer]= []
 
     #don't know why I need to repoen (oh well...)
-    csvfile= open("anonymise_competence_dispos.csv", mode='r')
+    csvfile= open("competence_dispos.csv", mode='r')
     csv_reader = csv.DictReader(csvfile)
     for row in csv_reader:
         volunteer = row["anon"]
@@ -55,7 +55,7 @@ def get_volunteer_skills_and_availability():
     return(date_list, volunteer_list, skills, availability)
 
 
-def keep_one_skill(to_keep: str, to_remove=[]):
+def keep_one_skill(to_keep: str, skills, to_remove=[] ):
     # only keep one kind of skills
     vol = []
     for key, value in skills.items():
@@ -68,7 +68,7 @@ def keep_one_skill(to_keep: str, to_remove=[]):
     return vol
 
 
-def remove_skills(to_remove: list):
+def remove_skills(to_remove: list, skills):
     # only keep one kind of skills
     vol = []
     for key, value in skills.items():
@@ -80,7 +80,7 @@ def remove_skills(to_remove: list):
 # The aim of this plot is to start visualising the data in order to think about how
 # to make groups
 
-def make_plots(df, plot_name, n):
+def make_plots(df, plot_name, n, skills, availability, date_list):
     step=50
     i=0
     j=step
@@ -88,12 +88,12 @@ def make_plots(df, plot_name, n):
     while j<=n:
         to_plot=df[i:j]
         n_to_plot= len(to_plot)
-        make_a_plot(to_plot, f"{plot_name}_{j}", n_to_plot)
+        make_a_plot(to_plot, f"{plot_name}_{j}", n_to_plot, skills, availability, date_list)
         i=j
         j=j+step
 
 
-def make_a_plot(to_plot, plot_name, n_to_plot):
+def make_a_plot(to_plot, plot_name, n_to_plot, skills, availability, date_list):
 
     plt.figure(figsize=(25,20))
     for count, volunteer in enumerate(to_plot):
