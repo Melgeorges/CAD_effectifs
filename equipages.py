@@ -131,7 +131,7 @@ def create_shifts():
 
 
 def get_shifts_availability(date_list, volunteer_list, skills, availability):
-    shifts = create_shifts()
+    shifts, donotuse= create_shifts()
     date_list = [datetime.strptime(t, '%Y-%m-%d %H:%M') for t in date_list]
     volunteers_shifts = {}
 
