@@ -43,8 +43,6 @@ def get_volunteer_shift_availability(classe, availability, volunteer, date_list,
         return classe.name
 
 
-
-
 class Shifts:
     def __init__(self, name, begin, end, priority):
         self.name=name
@@ -68,7 +66,7 @@ class Shifts:
 
 
 shifts={}
-days = [(25, "mercredi"), (26, "jeudi"), (27, "vendredi")]
+days = [(25, "mercredi"), (26, "jeudi"), (27, "vendredi"),  (28, "samedi"),  (29, "dimanche")]
 
 for (day_numb, day_name) in days:
 
@@ -101,7 +99,7 @@ for (day_numb, day_name) in days:
     alpha_aprem_a.collision = [f"alpha_aprem_b_{day_name}"]
 
 
-    alpha_aprem_b = Shifts(name=f"alpha_matin_b_{day_name}",
+    alpha_aprem_b = Shifts(name=f"alpha_aprem_b_{day_name}",
                            begin= datetime(2020, 3, day_numb, 16, 0),
                            end= datetime(2020, 3, day_numb, 20, 0),
                            priority= 1000)
@@ -110,9 +108,25 @@ for (day_numb, day_name) in days:
     alpha_aprem_b.pse2=1
     alpha_aprem_b.collision = [f"alpha_aprem_a_{day_name}"]
 
+    vlums_a = Shifts(name=f"vlums_a_{day_name}",
+                           begin= datetime(2020, 3, day_numb, 10, 0),
+                           end= datetime(2020, 3, day_numb, 20, 0),
+                           priority= 100)
+    vlums_a.ci = 1
+    vlums_a.pse2 = 2
+    vlums_a.collision = [f"alpha_matin_a_{day_name}", f"alpha_matin_b_{day_name}", f"alpha_aprem_a_{day_name}",
+                         f"alpha_aprem_b_{day_name}", f"vlums_b_{day_name}"]
 
-    shifts[f"2020-03-{day_numb}"] = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b]
+    vlums_b = Shifts(name=f"vlums_b_{day_name}",
+                           begin= datetime(2020, 3, day_numb, 10, 0),
+                           end= datetime(2020, 3, day_numb, 20, 0),
+                           priority= 100)
+    vlums_b.ci = 1
+    vlums_b.pse2 = 2
+    vlums_b.collision = [f"alpha_matin_a_{day_name}", f"alpha_matin_b_{day_name}", f"alpha_aprem_a_{day_name}",
+                         f"alpha_aprem_b_{day_name}", f"vlums_a_{day_name}"]
 
+    shifts[f"2020-03-{day_numb}"] = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b, vlums_a, vlums_b]
 
 
 
