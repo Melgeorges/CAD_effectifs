@@ -39,14 +39,13 @@ def create_volunteers(volunteer_list, skills, availability):
     return structured_volunteer_list
 
 
-def create_model(volunteer_list, date_list, shift_list):
+def create_model(model, volunteer_list, date_list, shift_list):
     # precomputations
     identity_list = []
     volunteer_dict = {vol.identity: vol for vol in volunteer_list}
     for v in volunteer_list:
         identity_list.append(v.identity)
 
-    model = cp_model.CpModel()
     assignment = {}
     # creation of boolean variables 1 variable/(volunteer, date, shift where the volunteer is available)
     for v in volunteer_list:
@@ -75,32 +74,32 @@ def create_model(volunteer_list, date_list, shift_list):
             model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
                           s.name in volunteer_dict[identity].availability[d]) >= s.log)
 
-    return model
+    return assignment
 
 
 class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
     """Print intermediate solutions."""
 
-    def __init__(self, shifts, num_volunteers, num_days, num_shifts, sols):
+    def __init__(self, assignment, volunteer_dict, date_list, shifts, sols):
         cp_model.CpSolverSolutionCallback.__init__(self)
+        self._assignment = assignment
+        self._volunteer_dict = volunteer_dict
+        self._date_list = date_list
         self._shifts = shifts
-        self._num_volunteers = num_volunteers
-        self._num_days = num_days
-        self._num_shifts = num_shifts
         self._solutions = set(sols)
         self._solution_count = 0
 
     def on_solution_callback(self):
         if self._solution_count in self._solutions:
             print('Solution %i' % self._solution_count)
-            for d in range(self._num_days):
-                print('Day %i' % d)
-                for n in range(self._num_volunteers):
+            for d in self._date_list:
+                print('date %r' % d)
+                for identity in self._volunteer_dict:
                     is_working = False
-                    for s in range(self._num_shifts):
-                        if self.Value(self._shifts[(n, d, s)]):
+                    for s in self._shifts:
+                        if s in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
                             is_working = True
-                            print('  Volunteer %i works shift %i' % (n, s))
+                            print('  Volunteer %r works shift %i' % (identity, s.name))
                     # if not is_working:
                     #     print('  Volunteer {} does not work'.format(n))
             print()
@@ -113,10 +112,15 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
 def main():
     # Data.
     date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
+    volunteers = create_volunteers(volunteer_list, skills, availability)
+    volunteer_dict = {vol.identity: vol for vol in volunteers}
     # print("date_list",len(date_list),date_list)
     # print("volunteer_list",len(volunteer_list),volunteer_list)
     # print("skills",len(skills),skills)
     # print("availability",len(availability),availability)
+    model = cp_model.CpModel();
+    assignment = create_model(model,volunteers, date_list, shifts)
+    '''
     num_volunteers = len(volunteer_list)
     num_shifts = 12
     num_days = int(len(date_list) / num_shifts)
@@ -184,14 +188,14 @@ def main():
     #         shifts[(n, d, s)] for d in all_days for s in all_shifts)
     #     model.Add(min_shifts_per_volunteer <= num_shifts_worked)
     #     model.Add(num_shifts_worked <= max_shifts_per_volunteer)
-
+    '''
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
     solver.parameters.linearization_level = 0
     # Display the first solution.
     a_few_solutions = range(1)
-    solution_printer = VolunteersPartialSolutionPrinter(shifts, num_volunteers,
-                                                        num_days, num_shifts,
+    solution_printer = VolunteersPartialSolutionPrinter(assignment, volunteer_dict,
+                                                        date_list, shifts,
                                                         a_few_solutions)
     solver.SearchForAllSolutions(model, solution_printer)
 
