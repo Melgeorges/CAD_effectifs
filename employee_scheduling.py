@@ -59,21 +59,21 @@ def create_model(model, volunteer_list, date_list, shift_list):
     for d in date_list:
         for s in shift_list:
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]) >= s.ci)
+                    identity in enumerate(identity_list) if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]) == s.ci)
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
+                    identity in enumerate(identity_list) if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) == s.pse1)
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
+                    identity in enumerate(identity_list) if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) == s.pse2)
             model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
+                    identity in enumerate(identity_list) if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) == s.chauf_vpsp)
             model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
+                          volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) == s.chauf_vl)
             model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
+                          volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) == s.tsa)
             model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
+                          volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) == s.log)
             model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          s.name in volunteer_dict[identity].availability[d]) >= s.log)
+                          s.name in volunteer_dict[identity].availability[d]) == s.noskills)
 
     return assignment
 
@@ -122,7 +122,7 @@ def main():
     # print("skills",len(skills),skills)
     # print("availability",len(availability),availability)
     model = cp_model.CpModel();
-    assignment = create_model(model,volunteers, date_list, shifts)
+    assignment = create_model(model, volunteers, date_list, shifts)
     '''
     num_volunteers = len(volunteer_list)
     num_shifts = 12
