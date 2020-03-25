@@ -1,6 +1,7 @@
 from __future__ import print_function
 from ortools.sat.python import cp_model
 from sort_people import get_volunteer_skills_and_availability
+from equipages import *
 
 
 class Volunteer:
@@ -112,6 +113,8 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
 def main():
     # Data.
     date_list, volunteer_list, skills, availability = get_volunteer_skills_and_availability()
+    availability = get_shifts_availability(date_list, volunteer_list, skills, availability)
+    shifts = create_shifts()
     volunteers = create_volunteers(volunteer_list, skills, availability)
     volunteer_dict = {vol.identity: vol for vol in volunteers}
     # print("date_list",len(date_list),date_list)
