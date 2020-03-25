@@ -1,11 +1,13 @@
 import csv
-from sort_utils import *
-import pylab as plt
-import numpy as np
 from datetime import datetime
 from datastructures import Shifts, Volunteer
 
+# name (of volunteer) column in volunteer availability data
 name_column = "anon"
+
+# granularity of scheduling timeslots (number of hours, integer)
+# slots start at 0:00 and are of the for [n*size_time_slot, (n+1)*size_time_slot]
+size_time_slot = 2
 
 
 def parse_volunteers(file_adress):
@@ -16,7 +18,7 @@ def parse_volunteers(file_adress):
     date_list = []
     for row in csv_reader:
         name = row[name_column]
-        if not(name in volunteer_dict):
+        if not (name in volunteer_dict):
             skills = {"pse1": row["PSE1"], "pse2": row["PSE2"], "chauf_vpsp": row["chauf_vpsp"],
                       "chauf_vl": row["chauffeur_vl"], "ci": row["ci"], "tsa": row["tsa"],
                       "infirmier": row["infirmier"], "log": row["log"]}
@@ -27,10 +29,10 @@ def parse_volunteers(file_adress):
         dispo = datetime.strptime(row["dispo"], "%Y-%m-%d %H:%M")
         date_dispo = dispo.date()
         time_dispo = dispo.hour
-        if not(date_dispo in availability_by_date[name]):
+        if not (date_dispo in availability_by_date[name]):
             availability_by_date[name][date_dispo] = []
         availability_by_date[name][date_dispo].append(time_dispo)
-        if not(dispo.date() in date_list):
+        if not (dispo.date() in date_list):
             date_list.append(date_dispo)
     return date_list, volunteer_dict, availability_by_date
 
@@ -41,7 +43,7 @@ def parse_shifts(file_adress):
     shift_dict = {}
     for row in csv_reader:
         name = row["name"]
-        if not(name in shift_dict):
+        if not (name in shift_dict):
             s = Shifts(name, int(row["begin"]), int(row["end"]), int(row["priority"]))
             shift_dict[name] = s
         num_people = int(row["number"])
@@ -73,18 +75,18 @@ def compute_shift_availability(shifts, date_list, volunteers, availability):
             volunteers[v].availability[d] = []
             for s in shifts:
                 available = True
-                debut = shifts[s].debut
-                fin = shifts[s].fin
-                heure = int(debut/2)
+                debut = shifts[s].begin
+                fin = shifts[s].end
+                heure = size_time_slot * int(debut / size_time_slot)
                 while heure < fin:
-                    if not(heure in availability[v][d]):
+                    if not (heure in availability[v][d]):
                         available = False
-                    heure = heure + 2
+                    heure = heure + size_time_slot
                 if available:
                     volunteers[v].availability[d].append(s)
 
 
-def process_shifts_volunteers(shifts_file, volunteers_file):
+def parse_shifts_volunteers(shifts_file, volunteers_file):
     date_list, volunteer_dict, availability_by_date = parse_volunteers(volunteers_file)
     shift_dict = parse_shifts(shifts_file)
     compute_shift_availability(shift_dict, date_list, volunteer_dict, availability_by_date)

@@ -194,7 +194,8 @@ def main():
 
 
 if __name__ == '__main__':
-    d, v, a = parse_volunteers("anonymise_competence_dispos.csv")
-    s = parse_shifts("equipages_formatted.csv")
+    # d, v, a = parse_volunteers("anonymise_competence_dispos.csv")
+    # s = parse_shifts("equipages_formatted.csv")
+    date_list, volunteer_dict, shift_dict = parse_shifts_volunteers("equipages_formatted.csv", "anonymise_competence_dispos.csv")
     x=1
     #main()
