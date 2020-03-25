@@ -125,14 +125,13 @@ def create_shifts():
         vlums_b.collision = [f"alpha_matin_a", f"alpha_matin_b", f"alpha_aprem_a",
                              f"alpha_aprem_b", f"vlums_a"]
 
-        shifts[f"2020-03-{day_numb}"] = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b, vlums_a, vlums_b]
+        shifts[datetime(2020, 3, day_numb)] = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b, vlums_a, vlums_b]
         shift_schedul = [alpha_matin_a, alpha_matin_b, alpha_aprem_a, alpha_aprem_b, vlums_a, vlums_b]
     return shifts, shift_schedul
 
 
 def get_shifts_availability(date_list, volunteer_list, skills, availability):
     shifts, donotuse= create_shifts()
-    date_list = [datetime.strptime(t, '%Y-%m-%d %H:%M') for t in date_list]
     volunteers_shifts = {}
 
     for vol in volunteer_list:
