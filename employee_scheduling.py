@@ -121,6 +121,5 @@ if __name__ == '__main__':
     #date_list, volunteer_dict, shift_dict = parse_shifts_volunteers("equipages_formatted.csv", "anonymise_competence_dispos.csv")
     #model = cp_model.CpModel()
     #assignment = create_model(model, volunteer_dict, date_list, shift_dict)
-
     main()
     x = 1
