@@ -24,7 +24,7 @@ class Volunteer:
 
 
 
-class Shifts:
+class Shift:
     def __init__(self, name, begin, end, priority, required_skills):
         self.name = name
         self.begin = begin

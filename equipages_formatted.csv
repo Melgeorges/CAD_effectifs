@@ -1,9 +1,9 @@
 name,skill,number,begin,end,priority
 Alpha_1_matin,ci,1,08,16,1000
-Alpha_1_matin,vpsp,1,08,16,1000
+Alpha_1_matin,chauf_vpsp,1,08,16,1000
 Alpha_1_matin,pse2,1,08,16,1000
 Alpha_1_aprem,ci,1,16,24,1000
-Alpha_1_aprem,vpsp,1,16,24,1000
+Alpha_1_aprem,chauf_vpsp,1,16,24,1000
 Alpha_1_aprem,pse2,1,16,24,1000
 vlums_1,ci,1, 10, 20, 100
 vlums_1,pse2,1, 10, 20, 100

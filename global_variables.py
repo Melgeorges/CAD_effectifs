@@ -10,8 +10,11 @@ name_column = "anon"
 # slots start at 0:00 and are of the for [n*size_time_slot, (n+1)*size_time_slot]
 size_time_slot = 2
 
+# disponibility date-time format
+dispo_format = "%Y-%m-%d %H"
+
 # volunteer availability and skills file
-volunteers_csv = "anonymise_competence_dispos.csv"
+volunteers_csv = "anonymise_competence_dispos_complexity1.csv"
 
 # shifts definition file
 shifts_csv = "equipages_formatted.csv"

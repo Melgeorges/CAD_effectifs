@@ -1,7 +1,7 @@
 from __future__ import print_function
 from ortools.sat.python import cp_model
 from sort_people import get_volunteer_skills_and_availability
-from datastructures import Shifts, Volunteer
+from datastructures import Shift, Volunteer
 from equipages import *
 from process_data import *
 from global_variables import volunteers_csv, shifts_csv, skill_list
@@ -9,37 +9,51 @@ from global_variables import volunteers_csv, shifts_csv, skill_list
 
 
 def create_model(model, volunteer_dict, date_list, shift_dict):
-    # precomputations
-    identity_list = []
-    for vid in volunteer_dict:
-        identity_list.append(volunteer_dict[vid].identity)
-
+    # stats
+    number_of_variables = 0
+    number_of_constraints = 0
     assignment = {}
+    candidates_for_shifts = {}
     #date_list = list(set([d.split(" ")[0] for d in date_list]))
     # creation of boolean variables 1 variable/(volunteer, date, shift where the volunteer is available)
-    for vid in volunteer_dict:
-        v = volunteer_dict[vid]
-        for d in date_list:
-            for sid in shift_dict:
-                s = shift_dict[sid]
-                if s.name in v.availability[d]:
-                    assignment[(v.identity, d, s.name)] = model.NewBoolVar('assignment_v%rd%rs%r' % (v.identity, d, s.name))
+
+    for d in date_list:
+        for sid in shift_dict:
+            s = shift_dict[sid]
+            skills_for_s = [sk for sk in skill_list if (s.skills[sk] > 0)]
+            for skill in skills_for_s:
+                candidates = [vid for vid in volunteer_dict
+                              if volunteer_dict[vid].skills[skill]
+                              and s.name in volunteer_dict[vid].availability[d]]
+                candidates_for_shifts[(d, s.name, skill)] = candidates
+                for vid in candidates:
+                    v = volunteer_dict[vid]
+                    assignment[(v.identity, d, s.name, skill)] = model.NewBoolVar('%s_works_%s_on_%s_as_%s' % (v.identity, s.name, d, skill))
+                    # TODO ignoring noskills on purpose for the moment
+                    print('var: %s_works_%s_on_%s_as_%s' % (v.identity, s.name, d, skill))
+                    number_of_variables += 1
+
 
     # constraints: each shift is populated
     for d in date_list:
         for sid in shift_dict:
             s = shift_dict[sid]
-            for skill in skill_list:
-                if s.skills[skill] > 0:
-                    available_volunteers = \
-                        [volunteer_dict[vid].identity for vid in volunteer_dict if
-                         volunteer_dict[vid].skills[skill] and s.name in volunteer_dict[vid].availability[d]]
-                    model.Add(sum(assignment[(identity, d, s.name)] for identity in available_volunteers) >= s.skills[skill])
-                if s.noskills > 0: #TODO noskill untested
+            for skill in [sk for sk in skill_list if (s.skills[sk] > 0)]:
+                available_volunteers = \
+                    [volunteer_dict[vid].identity for vid in candidates_for_shifts[(d, s.name, skill)]]
+                print([(identity, d, s.name, skill) for identity in available_volunteers])
+                print(s.skills[skill])
+                model.Add(sum(assignment[(identity, d, s.name, skill)] for identity in available_volunteers) >= s.skills[skill])
+                number_of_constraints += 1
+                # TODO noskill ignored on purpose
+                """
+                if s.noskills > 0: 
                     available_volunteers = \
                         [volunteer_dict[vid].identity for vid in volunteer_dict if
                          s.name in volunteer_dict[vid].availability[d]]
                     model.Add(sum(assignment[(identity, d, s.name)] for identity in available_volunteers) >= s.skills[skill])
+                    number_of_constraints += 1
+                """
             #available_ci = [identity for identity in volunteer_dict if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]]
             #model.Add(sum(assignment[(identity, d, s.name)] for identity in available_ci) >= s.ci)
             #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
@@ -53,6 +67,7 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
     #print(date_list)
     #print(shift_list)
     #print(volunteer_list)
+    print("assignment computed: %i variable, %i constraints" % (number_of_variables, number_of_constraints))
     return assignment
 
 
@@ -77,9 +92,17 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
                     is_working = False
                     for sid in self._shifts:
                         s = self._shifts[sid]
-                        if s.name in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
-                            is_working = True
-                            print('  Volunteer %s works shift %s' % (identity, s.name))
+                        for skill in skill_list:
+                            if (identity, d, s.name, skill) in self._assignment\
+                                    and self.Value(self._assignment[(identity, d, s.name, skill)]):
+                                print('  Volunteer %s works shift %s as %s' % (identity, s.name, skill))
+                            """
+                            if s.name in self._volunteer_dict[identity].availability[d] \
+                                    and (identity, s, s.name, skill) in self._assignment \
+                                    and self.Value(self._assignment[(identity, d, s.name, skill)]):
+                                is_working = True
+                                print('  Volunteer %s works shift %s as %s' % (identity, s.name, skill))
+                            """
                     # if not is_working:
                     #     print('  Volunteer {} does not work'.format(n))
             print()

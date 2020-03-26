@@ -1,7 +1,7 @@
 import csv
-from global_variables import skill_list, size_time_slot, name_column
+from global_variables import skill_list, size_time_slot, name_column, dispo_format
 from datetime import datetime
-from datastructures import Shifts, Volunteer
+from datastructures import Shift, Volunteer
 
 
 
@@ -22,7 +22,7 @@ def parse_volunteers(file_adress):
             volunteer_dict[name] = v
             availability_by_date[name] = {}
         # 2020-03-23 00:00
-        dispo = datetime.strptime(row["dispo"], "%Y-%m-%d %H:%M")
+        dispo = datetime.strptime(row["dispo"], dispo_format)
         date_dispo = dispo.date()
         time_dispo = dispo.hour
         if not (date_dispo in availability_by_date[name]):
@@ -42,7 +42,7 @@ def parse_shifts(file_adress):
         name = row["name"]
         if not (name in shift_dict):
             required_skills = {skill: 0 for skill in skill_list}
-            s = Shifts(name, int(row["begin"]), int(row["end"]), int(row["priority"]), required_skills)
+            s = Shift(name, int(row["begin"]), int(row["end"]), int(row["priority"]), required_skills)
 
             shift_dict[name] = s
         num_people = int(row["number"])
@@ -68,7 +68,7 @@ def compute_shift_availability(shifts, date_list, volunteers, availability):
                 heure = size_time_slot * int(debut / size_time_slot)
                 #TODO mark as available only if volunteer has a skill in the skill list
                 while heure < fin:
-                    if not (heure in availability[v][d]):
+                    if not (d in availability[v]) or not (heure in availability[v][d]):
                         available = False
                     heure = heure + size_time_slot
                 if available:
