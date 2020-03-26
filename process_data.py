@@ -48,8 +48,8 @@ def parse_shifts(file_adress):
         num_people = int(row["number"])
         skill = row["skill"]
         if skill in skill_list:
-            shift_dict[name].skills[skill] == num_people
-        elif skill == "noskills":
+            shift_dict[name].skills[skill] = num_people
+        elif skill == "noskills": #TODO noskill untested
             shift_dict[name].noskills = num_people
         else:
             print("Warning: Unknown skill '%s' encountered when parsing shifts, ignoring the line" % skill)

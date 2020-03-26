@@ -29,15 +29,26 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
     for d in date_list:
         for sid in shift_dict:
             s = shift_dict[sid]
-            available_ci = [identity for identity in volunteer_dict if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]]
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in available_ci) >= s.ci)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if s.name in volunteer_dict[identity].availability[d]) >= s.noskills)
+            for skill in skill_list:
+                if s.skills[skill] > 0:
+                    available_volunteers = \
+                        [volunteer_dict[vid].identity for vid in volunteer_dict if
+                         volunteer_dict[vid].skills[skill] and s.name in volunteer_dict[vid].availability[d]]
+                    model.Add(sum(assignment[(identity, d, s.name)] for identity in available_volunteers) >= s.skills[skill])
+                if s.noskills > 0: #TODO noskill untested
+                    available_volunteers = \
+                        [volunteer_dict[vid].identity for vid in volunteer_dict if
+                         s.name in volunteer_dict[vid].availability[d]]
+                    model.Add(sum(assignment[(identity, d, s.name)] for identity in available_volunteers) >= s.skills[skill])
+            #available_ci = [identity for identity in volunteer_dict if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]]
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in available_ci) >= s.ci)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
+            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if s.name in volunteer_dict[identity].availability[d]) >= s.noskills)
     #print(assignment)
     #print(date_list)
     #print(shift_list)
