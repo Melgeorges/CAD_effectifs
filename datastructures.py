@@ -35,9 +35,6 @@ class Shift:
         self.skills = required_skills
         self.noskills = 0
 
-        # collision
-        self.collision = []
-
     def __repr__(self):
         return "<shift %r, begin: %r, end: %r, priority: %r, ci: %r, pse1: %r, pse2: %r, chauf_vpsp: %r, " \
                "chauf_vl: %r, tsa: %r, log: %r, infirmier: %r, noskills: %r, collision: %r>" % (
