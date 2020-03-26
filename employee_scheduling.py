@@ -65,14 +65,14 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
         if self._solution_count in self._solutions:
             print('Solution %i' % self._solution_count)
             for d in self._date_list:
-                print('date %r' % d)
+                print('date %s' % d)
                 for identity in self._volunteer_dict:
                     is_working = False
                     for sid in self._shifts:
                         s = self._shifts[sid]
                         if s.name in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
                             is_working = True
-                            print('  Volunteer %r works shift %s' % (identity, s.name))
+                            print('  Volunteer %s works shift %s' % (identity, s.name))
                     # if not is_working:
                     #     print('  Volunteer {} does not work'.format(n))
             print()
