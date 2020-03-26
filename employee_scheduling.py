@@ -1,20 +1,23 @@
 from __future__ import print_function
 from ortools.sat.python import cp_model
 from sort_people import get_volunteer_skills_and_availability
-from datastructures import Shift, Volunteer
+from datastructures import Shift, Volunteer, Problem
 from equipages import *
-from process_data import *
+from process_data import parse_shifts_volunteers
 from global_variables import volunteers_csv, shifts_csv, skill_list
 
 
 
-def create_model(model, volunteer_dict, date_list, shift_dict):
+def create_model(model, problem):
+    volunteer_dict = problem.volunteers
+    date_list = problem.dates
+    shift_dict = problem.shifts
     # stats
     number_of_variables = 0
     number_of_constraints = 0
     assignment = {}
     candidates_for_shifts = {}
-    #date_list = list(set([d.split(" ")[0] for d in date_list]))
+    # date_list = list(set([d.split(" ")[0] for d in date_list]))
     # creation of boolean variables 1 variable/(volunteer, date, shift where the volunteer is available)
 
     for d in date_list:
@@ -78,12 +81,12 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
 class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
     """Print intermediate solutions."""
 
-    def __init__(self, assignment, volunteer_dict, date_list, shifts, sols):
+    def __init__(self, assignment, problem, sols):
         cp_model.CpSolverSolutionCallback.__init__(self)
         self._assignment = assignment
-        self._volunteer_dict = volunteer_dict
-        self._date_list = date_list
-        self._shifts = shifts
+        self._volunteer_dict = problem.volunteers
+        self._date_list = problem.dates
+        self._shifts = problem.shifts
         self._solutions = set(sols)
         self._solution_count = 0
 
@@ -92,10 +95,9 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
             print('Solution %i' % self._solution_count)
             for d in self._date_list:
                 print('date %s' % d)
-                for identity in self._volunteer_dict:
-                    is_working = False
-                    for sid in self._shifts:
-                        s = self._shifts[sid]
+                for sid in self._shifts:
+                    s = self._shifts[sid]
+                    for identity in self._volunteer_dict:
                         for skill in skill_list:
                             if (identity, d, s.name, skill) in self._assignment\
                                     and self.Value(self._assignment[(identity, d, s.name, skill)]):
@@ -118,19 +120,17 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
 
 def main():
     # Data.
-    date_list, volunteer_dict, shift_dict = parse_shifts_volunteers(shifts_csv, volunteers_csv)
+    problem = parse_shifts_volunteers(shifts_csv, volunteers_csv)
     model = cp_model.CpModel()
 
-    assignment = create_model(model, volunteer_dict, date_list, shift_dict)
+    assignment = create_model(model, problem)
 
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
     #solver.parameters.linearization_level = 0
     # Display the first solution.
-    a_few_solutions = range(1)
-    solution_printer = VolunteersPartialSolutionPrinter(assignment, volunteer_dict,
-                                                        date_list, shift_dict,
-                                                        a_few_solutions)
+    a_few_solutions = range(2)
+    solution_printer = VolunteersPartialSolutionPrinter(assignment, problem, a_few_solutions)
     solver.SearchForAllSolutions(model, solution_printer)
 
     # Statistics.

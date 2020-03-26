@@ -36,8 +36,13 @@ class Shift:
         self.noskills = 0
 
     def __repr__(self):
-        return "<shift %r, begin: %r, end: %r, priority: %r, ci: %r, pse1: %r, pse2: %r, chauf_vpsp: %r, " \
-               "chauf_vl: %r, tsa: %r, log: %r, infirmier: %r, noskills: %r, collision: %r>" % (
-                   self.name, self.begin, self.end, self.priority, self.ci, self.pse1, self.pse2, self.chauf_vpsp,
-                   self.chauf_vl, self.tsa, self.log, self.infirmier, self.noskills, self.collision
+        return "<shift %r, begin: %r, end: %r, priority: %r, %r, noskills: %r>" % (
+                   self.name, self.begin, self.end, self.priority, self.skills, self.noskills
                )
+
+
+class Problem:
+    def __init__(self, volunteers, shifts, dates):
+        self.volunteers = volunteers
+        self.shifts = shifts
+        self.dates = dates

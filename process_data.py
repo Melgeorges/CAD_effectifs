@@ -1,7 +1,7 @@
 import csv
 from global_variables import skill_list, size_time_slot, name_column, dispo_format
 from datetime import datetime
-from datastructures import Shift, Volunteer
+from datastructures import Shift, Volunteer, Problem
 
 
 
@@ -79,4 +79,4 @@ def parse_shifts_volunteers(shifts_file, volunteers_file):
     date_list, volunteer_dict, availability_by_date = parse_volunteers(volunteers_file)
     shift_dict = parse_shifts(shifts_file)
     compute_shift_availability(shift_dict, date_list, volunteer_dict, availability_by_date)
-    return date_list, volunteer_dict, shift_dict
+    return Problem(volunteer_dict, shift_dict, date_list)
