@@ -41,8 +41,8 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
             for skill in [sk for sk in skill_list if (s.skills[sk] > 0)]:
                 available_volunteers = \
                     [volunteer_dict[vid].identity for vid in candidates_for_shifts[(d, s.name, skill)]]
-                print([(identity, d, s.name, skill) for identity in available_volunteers])
-                print(s.skills[skill])
+                #print([(identity, d, s.name, skill) for identity in available_volunteers])
+                #print(s.skills[skill])
                 model.Add(sum(assignment[(identity, d, s.name, skill)] for identity in available_volunteers) >= s.skills[skill])
                 number_of_constraints += 1
                 # TODO noskill ignored on purpose
@@ -54,19 +54,23 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
                     model.Add(sum(assignment[(identity, d, s.name)] for identity in available_volunteers) >= s.skills[skill])
                     number_of_constraints += 1
                 """
-            #available_ci = [identity for identity in volunteer_dict if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]]
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in available_ci) >= s.ci)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
-            #model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if s.name in volunteer_dict[identity].availability[d]) >= s.noskills)
-    #print(assignment)
-    #print(date_list)
-    #print(shift_list)
-    #print(volunteer_list)
+    # constraints: each volunteer may only work one shift per day
+    #computing all possible shifts,skills pairs
+    all_shifts_skills = []
+    for sid in shift_dict:
+        for skill in skill_list:
+            if shift_dict[sid].skills[skill] > 0:
+                all_shifts_skills.append((shift_dict[sid].name, skill))
+    for d in date_list:
+        for vid in volunteer_dict:
+            identity = volunteer_dict[vid].identity
+            possible_assignments = [(identity, d, sh, sk) for (sh, sk) in all_shifts_skills if (identity, d, sh, sk) in assignment]
+            model.Add(sum(assignment[assig] for assig in possible_assignments) <= 1)
+            print(possible_assignments)
+            number_of_constraints += 1;
+
+
+
     print("assignment computed: %i variable, %i constraints" % (number_of_variables, number_of_constraints))
     return assignment
 
@@ -121,7 +125,7 @@ def main():
 
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
-    solver.parameters.linearization_level = 0
+    #solver.parameters.linearization_level = 0
     # Display the first solution.
     a_few_solutions = range(1)
     solution_printer = VolunteersPartialSolutionPrinter(assignment, volunteer_dict,

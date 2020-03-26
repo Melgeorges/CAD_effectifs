@@ -14,9 +14,10 @@ size_time_slot = 2
 dispo_format = "%Y-%m-%d %H"
 
 # volunteer availability and skills file
-volunteers_csv = "anonymise_competence_dispos_complexity1.csv"
+#volunteers_csv = "anonymise_competence_dispos_complexity1.csv"
+volunteers_csv = "anonymise_competence_dispos.csv"
 
 # shifts definition file
-shifts_csv = "equipages_formatted.csv"
-
+#shifts_csv = "equipages_formatted.csv"
+shifts_csv = "equipages_formatted_simple.csv"
 
