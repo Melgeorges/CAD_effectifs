@@ -33,22 +33,15 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
     for d in date_list:
         for sid in shift_dict:
             s = shift_dict[sid]
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]) >= s.ci)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          s.name in volunteer_dict[identity].availability[d]) == s.noskills)
+            available_ci = [identity for identity in volunteer_dict if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]]
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in available_ci) >= s.ci)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if s.name in volunteer_dict[identity].availability[d]) >= s.noskills)
     #print(assignment)
     #print(date_list)
     #print(shift_list)
@@ -77,9 +70,9 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
                     is_working = False
                     for sid in self._shifts:
                         s = self._shifts[sid]
-                        if s in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
+                        if s.name in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
                             is_working = True
-                            print('  Volunteer %r works shift %i' % (identity, s.name))
+                            print('  Volunteer %r works shift %s' % (identity, s.name))
                     # if not is_working:
                     #     print('  Volunteer {} does not work'.format(n))
             print()

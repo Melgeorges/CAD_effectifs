@@ -16,14 +16,14 @@ class Volunteer:
     def __init__(self, identity, skills, availability):
         self.identity = identity
         # skills order is is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
-        self.pse1 = skills["pse1"]
-        self.pse2 = skills["pse2"]
-        self.chauf_vpsp = skills["chauf_vpsp"]
-        self.chauf_vl = skills["chauf_vl"]
-        self.ci = skills["ci"]
-        self.tsa = skills["tsa"]
-        self.log = skills["log"]
-        self.infirmier = skills["infirmier"]
+        self.pse1 = (skills["pse1"] == 'True')
+        self.pse2 = (skills["pse2"] == 'True')
+        self.chauf_vpsp = (skills["chauf_vpsp"] == 'True')
+        self.chauf_vl = (skills["chauf_vl"] == 'True')
+        self.ci = (skills["ci"] == 'True')
+        self.tsa = (skills["tsa"] == 'True')
+        self.log = (skills["log"] == 'True')
+        self.infirmier = (skills["infirmier"] == 'True')
         self.availability = availability
 
     def __repr__(self):
