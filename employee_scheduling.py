@@ -4,12 +4,8 @@ from sort_people import get_volunteer_skills_and_availability
 from datastructures import Shifts, Volunteer
 from equipages import *
 from process_data import *
+from global_variables import volunteers_csv, shifts_csv, skill_list
 
-# volunteer availability and skills file
-volunteers_csv = "anonymise_competence_dispos.csv"
-
-# shifts definition file
-shifts_csv = "equipages_formatted.csv"
 
 
 def create_model(model, volunteer_dict, date_list, shift_dict):
@@ -33,22 +29,15 @@ def create_model(model, volunteer_dict, date_list, shift_dict):
     for d in date_list:
         for sid in shift_dict:
             s = shift_dict[sid]
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]) >= s.ci)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity,
-                    identity in enumerate(identity_list) if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
-            model.Add(sum(assignment[(identity, d, s.name)] for identity, identity in enumerate(identity_list) if
-                          s.name in volunteer_dict[identity].availability[d]) == s.noskills)
+            available_ci = [identity for identity in volunteer_dict if volunteer_dict[identity].ci and s.name in volunteer_dict[identity].availability[d]]
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in available_ci) >= s.ci)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse1 and s.name in volunteer_dict[identity].availability[d]) >= s.pse1)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].pse2 and s.name in volunteer_dict[identity].availability[d]) >= s.pse2)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vpsp and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vpsp)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].chauf_vl and s.name in volunteer_dict[identity].availability[d]) >= s.chauf_vl)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].tsa and s.name in volunteer_dict[identity].availability[d]) >= s.tsa)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if volunteer_dict[identity].log and s.name in volunteer_dict[identity].availability[d]) >= s.log)
+            model.Add(sum(assignment[(identity, d, s.name)] for identity in identity_list if s.name in volunteer_dict[identity].availability[d]) >= s.noskills)
     #print(assignment)
     #print(date_list)
     #print(shift_list)
@@ -72,14 +61,14 @@ class VolunteersPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
         if self._solution_count in self._solutions:
             print('Solution %i' % self._solution_count)
             for d in self._date_list:
-                print('date %r' % d)
+                print('date %s' % d)
                 for identity in self._volunteer_dict:
                     is_working = False
                     for sid in self._shifts:
                         s = self._shifts[sid]
-                        if s in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
+                        if s.name in self._volunteer_dict[identity].availability[d] and self.Value(self._assignment[(identity, d, s.name)]):
                             is_working = True
-                            print('  Volunteer %r works shift %i' % (identity, s.name))
+                            print('  Volunteer %s works shift %s' % (identity, s.name))
                     # if not is_working:
                     #     print('  Volunteer {} does not work'.format(n))
             print()
