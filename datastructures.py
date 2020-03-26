@@ -16,47 +16,23 @@ class Volunteer:
     def __init__(self, identity, skills, availability):
         self.identity = identity
         # skills order is is_pse1, is_pse2, is_chauf_vpsp, is_chauffeur_vl,is_ci
-        self.pse1 = (skills["pse1"] == 'True')
-        self.pse2 = (skills["pse2"] == 'True')
-        self.chauf_vpsp = (skills["chauf_vpsp"] == 'True')
-        self.chauf_vl = (skills["chauf_vl"] == 'True')
-        self.ci = (skills["ci"] == 'True')
-        self.tsa = (skills["tsa"] == 'True')
-        self.log = (skills["log"] == 'True')
-        self.infirmier = (skills["infirmier"] == 'True')
+        self.skills = skills
         self.availability = availability
 
     def __repr__(self):
-        return "<Volunteer %s, pse1: %r, pse2: %r, " \
-               "chauf_vpsp: %r, chauffeur_vl: %r, " \
-               "ci: %r, tsa: %r, log %r, availability: %r>" % (self.identity,
-                                                self.pse1,
-                                                self.pse2,
-                                                self.chauf_vpsp,
-                                                self.chauf_vl,
-                                                self.ci,
-                                                self.tsa,
-                                                self.log,
-                                                self.availability)
+        return "<Volunteer %s, %r, availability: %r>" % (self.identity, self.skills, self.availability)
 
 
 
 class Shifts:
-    def __init__(self, name, begin, end, priority):
+    def __init__(self, name, begin, end, priority, required_skills):
         self.name = name
         self.begin = begin
         self.end = end
         self.priority = priority
 
         # skills for the shift
-        self.ci = 0
-        self.pse1 = 0
-        self.pse2 = 0
-        self.chauf_vpsp = 0
-        self.chauf_vl = 0
-        self.tsa = 0
-        self.log = 0
-        self.infirmier = 0
+        self.skills = required_skills
         self.noskills = 0
 
         # collision

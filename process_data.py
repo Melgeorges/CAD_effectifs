@@ -1,13 +1,9 @@
 import csv
+from global_variables import skill_list, size_time_slot, name_column
 from datetime import datetime
 from datastructures import Shifts, Volunteer
 
-# name (of volunteer) column in volunteer availability data
-name_column = "anon"
 
-# granularity of scheduling timeslots (number of hours, integer)
-# slots start at 0:00 and are of the for [n*size_time_slot, (n+1)*size_time_slot]
-size_time_slot = 2
 
 
 def parse_volunteers(file_adress):
@@ -19,9 +15,9 @@ def parse_volunteers(file_adress):
     for row in csv_reader:
         name = row[name_column]
         if not (name in volunteer_dict):
-            skills = {"pse1": row["PSE1"], "pse2": row["PSE2"], "chauf_vpsp": row["chauf_vpsp"],
-                      "chauf_vl": row["chauffeur_vl"], "ci": row["ci"], "tsa": row["tsa"],
-                      "infirmier": row["infirmier"], "log": row["log"]}
+            skills = {}
+            for s in skill_list:
+                skills[s] = (row[s] == "True")
             v = Volunteer(name, skills, [])
             volunteer_dict[name] = v
             availability_by_date[name] = {}
@@ -31,7 +27,8 @@ def parse_volunteers(file_adress):
         time_dispo = dispo.hour
         if not (date_dispo in availability_by_date[name]):
             availability_by_date[name][date_dispo] = []
-        availability_by_date[name][date_dispo].append(time_dispo)
+        if row["Value"] == "OUI":
+            availability_by_date[name][date_dispo].append(time_dispo)
         if not (dispo.date() in date_list):
             date_list.append(date_dispo)
     return date_list, volunteer_dict, availability_by_date
@@ -44,27 +41,18 @@ def parse_shifts(file_adress):
     for row in csv_reader:
         name = row["name"]
         if not (name in shift_dict):
-            s = Shifts(name, int(row["begin"]), int(row["end"]), int(row["priority"]))
+            required_skills = {skill: 0 for skill in skill_list}
+            s = Shifts(name, int(row["begin"]), int(row["end"]), int(row["priority"]), required_skills)
+
             shift_dict[name] = s
         num_people = int(row["number"])
-        if row["skill"] == "PSE1":
-            shift_dict[name].pse1 = num_people
-        if row["skill"] == "PSE2":
-            shift_dict[name].pse2 = num_people
-        if row["skill"] == "chauf_vpsp":
-            shift_dict[name].chauf_vpsp = num_people
-        if row["skill"] == "chauffeur_vl":
-            shift_dict[name].chauf_vl = num_people
-        if row["skill"] == "ci":
-            shift_dict[name].ci = num_people
-        if row["skill"] == "tsa":
-            shift_dict[name].tsa = num_people
-        if row["skill"] == "infirmier":
-            shift_dict[name].infirmier = num_people
-        if row["skill"] == "log":
-            shift_dict[name].log = num_people
-        if row["skill"] == "noskills":
+        skill = row["skill"]
+        if skill in skill_list:
+            shift_dict[name].skills[skill] == num_people
+        elif skill == "noskills":
             shift_dict[name].noskills = num_people
+        else:
+            print("Warning: Unknown skill '%s' encountered when parsing shifts, ignoring the line" % skill)
     return shift_dict
 
 
@@ -78,6 +66,7 @@ def compute_shift_availability(shifts, date_list, volunteers, availability):
                 debut = shifts[s].begin
                 fin = shifts[s].end
                 heure = size_time_slot * int(debut / size_time_slot)
+                #TODO mark as available only if volunteer has a skill in the skill list
                 while heure < fin:
                     if not (heure in availability[v][d]):
                         available = False

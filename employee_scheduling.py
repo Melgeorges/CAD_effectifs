@@ -4,12 +4,8 @@ from sort_people import get_volunteer_skills_and_availability
 from datastructures import Shifts, Volunteer
 from equipages import *
 from process_data import *
+from global_variables import volunteers_csv, shifts_csv, skill_list
 
-# volunteer availability and skills file
-volunteers_csv = "anonymise_competence_dispos.csv"
-
-# shifts definition file
-shifts_csv = "equipages_formatted.csv"
 
 
 def create_model(model, volunteer_dict, date_list, shift_dict):
