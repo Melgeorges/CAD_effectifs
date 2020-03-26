@@ -25,10 +25,9 @@ infirmier = [True if "Infirmier.e local.e" in elem else False for elem in compet
 tsa = [True if "TSA / Coreg" in elem else False for elem in competence]
 
 
-
-infos = infos.assign(chauffeur_vl=chauffeur_vl,
-                     PSE1=PSE1,
-                     PSE2=PSE2,
+infos = infos.assign(chauf_vl=chauffeur_vl,
+                     pse1=PSE1,
+                     pse2=PSE2,
                      chauf_vpsp=chauf_vpsp,
                      maraud=maraud,
                      psc1=psc1,
@@ -41,10 +40,17 @@ infos = infos.assign(chauffeur_vl=chauffeur_vl,
                      tsa=tsa,
                      infirmier=infirmier)
 
+
+infos.loc[infos.ci == True, 'pse2'] = False
+infos.loc[infos.chauf_vpsp == True, 'pse2'] = False
+infos.loc[infos.pse2 == True, 'pse1'] = False
+
+
+
 cols = ['Horodateur', 'Adresse e-mail', 'Numéro de téléphone portable', 'Prénom', 'NOM', 'Votre structure de rattachement', 'Unnamed: 6',
         'Cadre ?', 'Secouriste ?', 'Si oui, quelle est-elle ?', 'Quelle sont vos compétences Croix-Rouge ?',
         'Quelle est votre profession ?', "Uniforme ?",
-        'chauffeur_vl', 'PSE1', 'PSE2', 'chauf_vpsp', 'maraud', 'psc1', 'log', 'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene',
+        'chauf_vl', 'pse1', 'pse2', 'chauf_vpsp', 'maraud', 'psc1', 'log', 'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene',
         'tsa', 'infirmier', 'Unnamed: 97']
 
 mapping_days = {'Lundi': "2020-03-23",
@@ -66,22 +72,22 @@ infos_rowed.Date = [elem.replace("[", "") for elem in infos_rowed.Date]
 infos_rowed.Date = [elem.replace("]", "") for elem in infos_rowed.Date]
 infos_rowed["day_name"] = [elem.split("-")[0] for elem in infos_rowed.Date]
 infos_rowed["day"] = infos_rowed["day_name"].replace(mapping_days)
-infos_rowed["hour_dispo"] = [elem.split("-")[1]+':00' for elem in infos_rowed.Date]
+infos_rowed["hour_dispo"] = [elem.split("-")[1] for elem in infos_rowed.Date]
 infos_rowed['dispo'] = infos_rowed[['day', 'hour_dispo']].agg(' '.join, axis=1)
 
 
 infos_rowed['anon'] = infos_rowed.NOM.replace(anon_dict)
-to_send = infos_rowed[['anon', 'chauffeur_vl', 'PSE1', 'PSE2', 'chauf_vpsp', 'maraud', 'psc1', 'log',
+to_send = infos_rowed[['anon', 'chauf_vl', 'pse1', 'pse2', 'chauf_vpsp', 'maraud', 'psc1', 'log',
                        'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene', 'tsa', 'infirmier',
                        'Date', 'Value', 'day_name', 'dispo']]
-to_send.to_csv("anonymise_competence_dispos.csv")
+to_send.to_csv("anonymise_competence_dispos_total.csv")
 
 
 
 
 # que pour mel
 infos_rowed['anon'] = infos_rowed.NOM
-to_send = infos_rowed[['anon', 'chauffeur_vl', 'PSE1', 'PSE2', 'chauf_vpsp', 'maraud', 'psc1', 'log',
+to_send = infos_rowed[['anon', 'chauf_vl', 'pse1', 'pse2', 'chauf_vpsp', 'maraud', 'psc1', 'log',
                        'chef_maraud', 'fle', 'perm_soc', 'ci', 'nouv_bene', 'tsa', 'infirmier',
                        'Date', 'Value', 'day_name', 'dispo']]
 
