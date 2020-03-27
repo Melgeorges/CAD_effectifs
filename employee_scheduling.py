@@ -76,7 +76,7 @@ def add_populate_shifts_constraints(model, problem, shift_model):
                 #print(s.skills[skill])
                 model.Add(
                     sum(shift_model.assignment[(vid, d, sid, skill)] for vid in available_volunteers)
-                    >= s.skills[skill]
+                    == s.skills[skill]
                 ).OnlyEnforceIf(var_s_d)
                 shift_model.number_of_constraints += 1
                 # TODO noskill ignored on purpose
@@ -151,10 +151,13 @@ def add_constraint_consecutive_days(model, problem, shift_model):
 # Setting optimization parameter for the model
 def set_model_objective(model, problem, shift_model):
     # Setting model objective: maximizing shift score
-    model.Maximize(
+    shift_model.fitness = model.NewIntVar(-1000000000, 1000000000, "fitness")
+    model.Add(
+        shift_model.fitness ==
         shift_model.shifts_score
-        - shift_model.consecutive_penalty
+        - two_days_in_a_row * shift_model.consecutive_penalty
     )
+    model.Maximize(shift_model.fitness)
 
 
 def create_model(model, problem):
@@ -268,7 +271,7 @@ def main():
     status = solver.Solve(model)
 
     print_sol(shift_model, problem, solver)
-    print(solver.Value(shift_model.shifts_score))
+    print(solver.Value(shift_model.fitness))
 
     # Statistics.
     print()
