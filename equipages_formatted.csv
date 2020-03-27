@@ -11,9 +11,12 @@ Alpha_1_aprem,pse2,1,08,16,1000
 Alpha_2_aprem,ci,1,16,24,1000
 Alpha_2_aprem,chauf_vpsp,1,08,16,1000
 Alpha_2_aprem,pse2,1,08,16,1000
+coviad_jour,pse2,1,08,20,100
+coviad_nuit,pse2,1,19,08,100
 vlums_1,ci,1, 10, 20, 100
-vlums_1,pse2,1, 10, 20, 100
-vlums_1,pse2,1, 10, 20, 100
+vlums_1,pse2,2, 10, 20, 100
 vlums_2,ci,1, 10, 20, 100
-vlums_2,pse2,1, 10, 20, 100
-vlums_2,pse2,1, 10, 20, 100
+vlums_2,pse2,2, 10, 20, 100
+CR_chez_vous, chauf_vl, 1, 16, 20, 100
+CR_chez_vous, chauf_vl, 1, 16, 20, 100
+CR_chez_vous, chauf_vl, 1, 16, 20, 100
