@@ -14,6 +14,8 @@ class ShiftModel:
         self.satisfied_shifts = {}
         self.working_days = {}
         self.consecutive_days = {}
+        self.multiple_days = {}
+        self.only_one_day = {}
         self.number_of_variables = 0
         self.number_of_constraints = 0
 
@@ -131,21 +133,38 @@ def add_var_constraint_working_days(model, problem, shift_model):
 def add_constraint_consecutive_days(model, problem, shift_model):
     volunteer_dict = problem.volunteers
     date_list = problem.dates
-    shift_dict = problem.shifts
     delta = timedelta(days=1)
     consecutive_dates = [(d1, d2) for d1 in date_list for d2 in date_list if d2 - d1 == delta]
     consecutive_penalty = model.NewIntVar(0, 1000000000, "consecutive_days_penalty")
     shift_model.consecutive_penalty = consecutive_penalty
     penalty_list = []
-    for (d1, d2) in consecutive_dates:
-        for vid in volunteer_dict:
-            v = volunteer_dict[vid]
+    for vid in volunteer_dict:
+        v = volunteer_dict[vid]
+        for (d1, d2) in consecutive_dates:
             penalty_d_v = model.NewBoolVar("%s works on %s and %s" % (v.identity, d1, d2))
             shift_model.consecutive_days[(vid, d1, d2)] = penalty_d_v
             penalty_list.append(penalty_d_v)
             model.AddMultiplicationEquality(penalty_d_v,
                                             [shift_model.working_days[vid, d1], shift_model.working_days[vid, d2]])
     model.Add(consecutive_penalty == sum(penalty_list))
+
+
+
+def add_constraint_only_few_days(model, problem, shift_model):
+    for vid in problem.volunteers:
+        v = problem.volunteers[vid]
+        var_v_numdays = model.NewIntVar(0, 7, "%s worked n days" % v.identity)
+        shift_model.multiple_days[vid] = var_v_numdays
+        var_v_only_one = model.NewBoolVar("%s worked only one day" % v.identity)
+        shift_model.only_one_day[vid] = var_v_only_one
+        model.Add(var_v_numdays == sum(
+                shift_model.working_days[(vid, d)] for d in problem.dates
+            )
+        )
+        model.Add(var_v_numdays <= 1).OnlyEnforceIf(var_v_only_one)
+    shift_model.num_less_than_one = model.NewIntVar(0, 1000000000, "n people worked no more than one day")
+    model.Add(shift_model.num_less_than_one == sum(shift_model.only_one_day[vid] for vid in problem.volunteers))
+
 
 
 # Setting optimization parameter for the model
@@ -156,6 +175,7 @@ def set_model_objective(model, problem, shift_model):
         shift_model.fitness ==
         shift_model.shifts_score
         - two_days_in_a_row * shift_model.consecutive_penalty
+        + shift_model.num_less_than_one
     )
     model.Maximize(shift_model.fitness)
 
@@ -166,6 +186,7 @@ def create_model(model, problem):
     add_populate_shifts_constraints(model, problem, shift_model)
     add_var_constraint_working_days(model, problem, shift_model)
     add_constraint_consecutive_days(model, problem, shift_model)
+    add_constraint_only_few_days(model, problem, shift_model)
     print("assignment computed: %i variable, %i constraints" % (
         shift_model.number_of_variables,
         shift_model.number_of_constraints
@@ -251,6 +272,15 @@ def print_sol(shift_model, problem, solver):
             print('  %s works on %s and %s' % (problem.volunteers[vid].identity, d1, d2))
     if no_consecutive_days:
         print('  None')
+    print()
+
+    print('number of working days:')
+    for vid in shift_model.multiple_days:
+        if solver.Value(shift_model.multiple_days[vid]) != 0:
+            print('  %s will work %i days' % (
+                problem.volunteers[vid].identity,
+                solver.Value(shift_model.multiple_days[vid])
+            ))
     print()
 
 
