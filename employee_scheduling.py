@@ -100,7 +100,7 @@ def add_populate_shifts_constraints(model, problem, shift_model):
 # constraints: each volunteer may only work one shift per day ==> not optional
 # working_days[(vid,d)] is the number of shifts worked by volunteer vid on day d
 # Populating working days variables
-def add_constraint_working_days(model, problem, shift_model):
+def add_var_constraint_working_days(model, problem, shift_model):
     volunteer_dict = problem.volunteers
     date_list = problem.dates
     shift_dict = problem.shifts
@@ -164,7 +164,7 @@ def create_model(model, problem):
     shift_model = ShiftModel()
     add_volunteer_variables(model, problem, shift_model)
     add_populate_shifts_constraints(model, problem, shift_model)
-    add_constraint_working_days(model, problem, shift_model)
+    add_var_constraint_working_days(model, problem, shift_model)
     add_constraint_consecutive_days(model, problem, shift_model)
     print("assignment computed: %i variable, %i constraints" % (
         shift_model.number_of_variables,
