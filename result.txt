@@ -1,0 +1,392 @@
+/usr/bin/python3.6 /home/gscerri/Code/CAD_effectifs/employee_scheduling.py
+assignment computed: 3682 variable, 1034 constraints
+Objective set !
+^C pressed 1 times. Interrupting the solver. Press 3 times to force termination.
+date 2020-03-23
+  Alpha_1_matin:
+    pse2: 131
+    ci: 161
+    chauf_vpsp: 90
+  Alpha_2_matin:
+    chauf_vpsp: 237
+    ci: 1
+    pse2: 286
+  Alpha_1_aprem:
+    pse2: 94
+    ci: 345
+    chauf_vpsp: 136
+  Alpha_2_aprem:
+    pse2: 89
+    ci: 204
+    chauf_vpsp: 216
+  coviad_jour:
+    pse2: 17
+  coviad_nuit:
+    pse2: 226
+  vlums_1:
+    ci: 348
+    pse2: 116
+    pse2: 39
+  vlums_2:
+    ci: 291
+    pse2: 282
+    pse2: 342
+  mops:
+    log: 335
+    log: 340
+    log: 322
+    log: 75
+  CR_chez_vous:
+    chauf_vl: 257
+
+date 2020-03-24
+  Alpha_1_matin:
+    ci: 122
+    chauf_vpsp: 304
+    pse2: 81
+  Alpha_2_matin:
+    pse2: 25
+    chauf_vpsp: 86
+    ci: 264
+  Alpha_1_aprem:
+    pse2: 177
+    ci: 189
+    chauf_vpsp: 142
+  Alpha_2_aprem:
+    chauf_vpsp: 209
+    pse2: 350
+    ci: 328
+  coviad_jour:
+    pse2: 105
+  coviad_nuit:
+    pse2: 43
+  vlums_1:
+    pse2: 84
+    ci: 145
+    pse2: 29
+  vlums_2:
+    pse2: 336
+    ci: 248
+    pse2: 318
+  mops:
+  CR_chez_vous:
+    chauf_vl: 351
+
+date 2020-03-25
+  Alpha_1_matin:
+    pse2: 152
+    chauf_vpsp: 309
+    ci: 215
+  Alpha_2_matin:
+    chauf_vpsp: 237
+    ci: 1
+    pse2: 147
+  Alpha_1_aprem:
+    pse2: 5
+    ci: 204
+    chauf_vpsp: 136
+  Alpha_2_aprem:
+    pse2: 160
+    ci: 345
+    chauf_vpsp: 216
+  coviad_jour:
+    pse2: 360
+  coviad_nuit:
+    pse2: 112
+  vlums_1:
+    pse2: 292
+    ci: 291
+    pse2: 37
+  vlums_2:
+    ci: 161
+    pse2: 332
+    pse2: 187
+  mops:
+    log: 340
+    log: 322
+    log: 213
+    log: 75
+  CR_chez_vous:
+    chauf_vl: 192
+
+date 2020-03-26
+  Alpha_1_matin:
+    pse2: 359
+    ci: 248
+    chauf_vpsp: 132
+  Alpha_2_matin:
+    pse2: 137
+    ci: 189
+    chauf_vpsp: 80
+  Alpha_1_aprem:
+    pse2: 238
+    chauf_vpsp: 20
+    ci: 328
+  Alpha_2_aprem:
+    pse2: 285
+    chauf_vpsp: 209
+    ci: 55
+  coviad_jour:
+    pse2: 91
+  coviad_nuit:
+    pse2: 150
+  vlums_1:
+    pse2: 194
+    ci: 145
+    pse2: 230
+  vlums_2:
+    pse2: 280
+    ci: 123
+    pse2: 167
+  mops:
+  CR_chez_vous:
+    chauf_vl: 170
+
+date 2020-03-27
+  Alpha_1_matin:
+    pse2: 358
+    ci: 291
+    chauf_vpsp: 136
+  Alpha_2_matin:
+    chauf_vpsp: 237
+    ci: 1
+    pse2: 14
+  Alpha_1_aprem:
+    pse2: 126
+    ci: 345
+    chauf_vpsp: 142
+  Alpha_2_aprem:
+    pse2: 251
+    ci: 204
+    chauf_vpsp: 216
+  coviad_jour:
+    pse2: 46
+  coviad_nuit:
+    pse2: 102
+  vlums_1:
+    pse2: 352
+    pse2: 156
+    ci: 190
+  vlums_2:
+    ci: 161
+    pse2: 164
+    pse2: 158
+  mops:
+    log: 340
+    log: 322
+    log: 213
+    log: 75
+  CR_chez_vous:
+    chauf_vl: 155
+
+date 2020-03-28
+  Alpha_1_matin:
+    pse2: 144
+    chauf_vpsp: 362
+    ci: 289
+  Alpha_2_matin:
+    ci: 248
+    pse2: 331
+    chauf_vpsp: 13
+  Alpha_1_aprem:
+    chauf_vpsp: 36
+    ci: 356
+    pse2: 106
+  Alpha_2_aprem:
+    ci: 145
+    chauf_vpsp: 209
+    pse2: 6
+  coviad_jour:
+    pse2: 235
+  coviad_nuit:
+    pse2: 214
+  vlums_1:
+    pse2: 203
+    pse2: 313
+    ci: 175
+  vlums_2:
+    pse2: 44
+    pse2: 121
+    ci: 328
+  mops:
+    log: 335
+    log: 242
+    log: 195
+    log: 178
+  CR_chez_vous:
+    chauf_vl: 231
+
+date 2020-03-29
+  Alpha_1_matin:
+    pse2: 330
+    ci: 161
+    chauf_vpsp: 136
+  Alpha_2_matin:
+    chauf_vpsp: 237
+    ci: 291
+    pse2: 325
+  Alpha_1_aprem:
+    ci: 204
+    chauf_vpsp: 216
+    pse2: 151
+  Alpha_2_aprem:
+    ci: 345
+    chauf_vpsp: 142
+    pse2: 85
+  coviad_jour:
+    pse2: 298
+  coviad_nuit:
+    pse2: 269
+  vlums_1:
+    pse2: 21
+    ci: 189
+    pse2: 101
+  vlums_2:
+    ci: 1
+    pse2: 30
+    pse2: 157
+  mops:
+    log: 340
+    log: 322
+    log: 213
+    log: 75
+  CR_chez_vous:
+    chauf_vl: 15
+
+unpopulated shifts:
+  mops on 2020-03-24
+  mops on 2020-03-26
+
+people working consecutive days:
+  None
+
+number of working days:
+  237 will work 4 days
+  336 will work 1 days
+  177 will work 1 days
+  1 will work 4 days
+  335 will work 2 days
+  351 will work 1 days
+  330 will work 1 days
+  257 will work 1 days
+  17 will work 1 days
+  280 will work 1 days
+  131 will work 1 days
+  242 will work 1 days
+  340 will work 4 days
+  161 will work 4 days
+  25 will work 1 days
+  5 will work 1 days
+  359 will work 1 days
+  298 will work 1 days
+  137 will work 1 days
+  248 will work 3 days
+  152 will work 1 days
+  309 will work 1 days
+  226 will work 1 days
+  89 will work 1 days
+  112 will work 1 days
+  84 will work 1 days
+  15 will work 1 days
+  215 will work 1 days
+  194 will work 1 days
+  145 will work 3 days
+  322 will work 4 days
+  94 will work 1 days
+  123 will work 1 days
+  21 will work 1 days
+  348 will work 1 days
+  358 will work 1 days
+  46 will work 1 days
+  285 will work 1 days
+  116 will work 1 days
+  251 will work 1 days
+  352 will work 1 days
+  44 will work 1 days
+  332 will work 1 days
+  102 will work 1 days
+  164 will work 1 days
+  14 will work 1 days
+  90 will work 1 days
+  195 will work 1 days
+  204 will work 4 days
+  292 will work 1 days
+  213 will work 3 days
+  126 will work 1 days
+  132 will work 1 days
+  291 will work 4 days
+  286 will work 1 days
+  160 will work 1 days
+  238 will work 1 days
+  122 will work 1 days
+  156 will work 1 days
+  75 will work 4 days
+  269 will work 1 days
+  282 will work 1 days
+  360 will work 1 days
+  29 will work 1 days
+  178 will work 1 days
+  345 will work 4 days
+  20 will work 1 days
+  187 will work 1 days
+  86 will work 1 days
+  167 will work 1 days
+  216 will work 4 days
+  37 will work 1 days
+  36 will work 1 days
+  209 will work 3 days
+  350 will work 1 days
+  105 will work 1 days
+  203 will work 1 days
+  318 will work 1 days
+  190 will work 1 days
+  144 will work 1 days
+  313 will work 1 days
+  150 will work 1 days
+  189 will work 3 days
+  342 will work 1 days
+  362 will work 1 days
+  264 will work 1 days
+  304 will work 1 days
+  91 will work 1 days
+  175 will work 1 days
+  331 will work 1 days
+  158 will work 1 days
+  325 will work 1 days
+  80 will work 1 days
+  142 will work 3 days
+  356 will work 1 days
+  289 will work 1 days
+  39 will work 1 days
+  235 will work 1 days
+  170 will work 1 days
+  55 will work 1 days
+  230 will work 1 days
+  136 will work 4 days
+  30 will work 1 days
+  147 will work 1 days
+  13 will work 1 days
+  81 will work 1 days
+  151 will work 1 days
+  157 will work 1 days
+  101 will work 1 days
+  121 will work 1 days
+  85 will work 1 days
+  43 will work 1 days
+  155 will work 1 days
+  6 will work 1 days
+  214 will work 1 days
+  106 will work 1 days
+  231 will work 1 days
+  328 will work 3 days
+  192 will work 1 days
+
+32098
+
+FEASIBLE
+Statistics
+  - conflicts       : 27608848
+  - branches        : 39668512
+  - wall time       : 11543.019361 s
+
+Process finished with exit code 0
