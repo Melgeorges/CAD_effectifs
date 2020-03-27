@@ -228,7 +228,7 @@ def print_sol(shift_model, problem, solver):
                 for skill in skill_list:
                     if (vid, d, sid, skill) in shift_model.assignment \
                             and solver.Value(shift_model.assignment[(vid, d, sid, skill)]):
-                        print('    %s: %s' % (skill, v.identity,))
+                        print('    %s: %s' % (skill, v.identity))
             # if not is_working:
             #     print('  Volunteer {} does not work'.format(n))
         print()
@@ -284,10 +284,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # d, v, a = parse_volunteers("anonymise_competence_dispos.csv")
-    # s = parse_shifts("equipages_formatted.csv")
-    #date_list, volunteer_dict, shift_dict = parse_shifts_volunteers("equipages_formatted.csv", "anonymise_competence_dispos.csv")
-    #model = cp_model.CpModel()
-    #assignment = create_model(model, volunteer_dict, date_list, shift_dict)
     main()
-    x = 1

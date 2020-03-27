@@ -8,7 +8,7 @@ from datastructures import Shift, Volunteer, Problem
 
 def parse_volunteers(file_adress):
     csvfile = open(file_adress, mode='r')
-    csv_reader = csv.DictReader(csvfile)
+    csv_reader = csv.DictReader(csvfile, skipinitialspace=True)
     volunteer_dict = {}
     availability_by_date = {}
     date_list = []
@@ -36,7 +36,7 @@ def parse_volunteers(file_adress):
 
 def parse_shifts(file_adress):
     csvfile = open(file_adress, mode='r')
-    csv_reader = csv.DictReader(csvfile)
+    csv_reader = csv.DictReader(csvfile, skipinitialspace=True)
     shift_dict = {}
     for row in csv_reader:
         name = row["name"]
