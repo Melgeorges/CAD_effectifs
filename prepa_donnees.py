@@ -43,6 +43,7 @@ infos = infos.assign(chauf_vl=chauffeur_vl,
 
 infos.loc[infos.ci == True, 'pse2'] = False
 infos.loc[infos.chauf_vpsp == True, 'pse2'] = False
+infos.loc[infos.chauf_vpsp == True, 'chauf_vl'] = False
 infos.loc[infos.pse2 == True, 'pse1'] = False
 
 

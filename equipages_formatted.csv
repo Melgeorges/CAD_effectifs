@@ -13,6 +13,8 @@ Alpha_2_aprem,chauf_vpsp,1,08,16,2000
 Alpha_2_aprem,pse2,1,08,16,2000
 coviad_jour,pse2,1,08,20,200
 coviad_nuit,pse2,1,19,08,200
+tsa_matin,tsa,2,08,16,200
+tsa_aprem,tsa,2,16,20,200
 vlums_1,ci,1,10,20,200
 vlums_1,pse2,2,10,20,200
 vlums_2,ci,1,10,20,200
