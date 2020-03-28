@@ -149,7 +149,11 @@ def add_constraint_consecutive_days(model, problem, shift_model):
     model.Add(consecutive_penalty == sum(penalty_list))
 
 
-
+# TODO: idea1: add one constraint per skill, people's constraint is the max for their skills, optimise for skills
+#   with constraint strictly greater than one => no booleans, but quite a few max to compute => might not help much
+#   idea2: check which skills are too rare to satisfy all shifts, optimize only for those, brutally constrain the other
+#   to be less than 1 person
+#   idea3: prune skills to make sure people only have one skill, then idea 1 becomes much simpler
 def add_constraint_only_few_days(model, problem, shift_model):
     for vid in problem.volunteers:
         v = problem.volunteers[vid]
@@ -169,13 +173,13 @@ def add_constraint_only_few_days(model, problem, shift_model):
 
 # Setting optimization parameter for the model
 def set_model_objective(model, problem, shift_model):
-    # Setting model objective: maximizing shift score
+    # Setting model objective: maximizing shift score with penalty for working two days in a row
     shift_model.fitness = model.NewIntVar(-1000000000, 1000000000, "fitness")
     model.Add(
         shift_model.fitness ==
         shift_model.shifts_score
         - two_days_in_a_row * shift_model.consecutive_penalty
-        + shift_model.num_less_than_one
+        #+ shift_model.num_less_than_one
     )
     model.Maximize(shift_model.fitness)
 
@@ -276,7 +280,7 @@ def print_sol(shift_model, problem, solver):
 
     print('number of working days:')
     for vid in shift_model.multiple_days:
-        if solver.Value(shift_model.multiple_days[vid]) != 0:
+        if solver.Value(shift_model.multiple_days[vid]) > 1:
             print('  %s will work %i days' % (
                 problem.volunteers[vid].identity,
                 solver.Value(shift_model.multiple_days[vid])
